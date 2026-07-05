@@ -8,6 +8,7 @@ import {
     HiOutlineEmojiHappy,
     HiOutlineX,
 } from "react-icons/hi";
+import { initializeSocket, receiveMessage, sendMessage } from "../config/socket";
 
 const Project = () => {
     const { projectId } = useParams();
@@ -33,6 +34,8 @@ const Project = () => {
     };
 
     useEffect(() => {
+        initializeSocket()
+
         if (projectId) {
             fetchProject();
         }
