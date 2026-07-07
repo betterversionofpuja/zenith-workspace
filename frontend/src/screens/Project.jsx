@@ -22,6 +22,7 @@ const Project = () => {
     const { user } = useContext(UserContext);
     const [messages, setMessages] = useState([]);
     const messagesContainerRef = useRef(null);
+    const [isZenithThinking, setIsZenithThinking] = useState(false);
     console.log(messages);
 
     console.log(projectId);
@@ -78,7 +79,15 @@ const Project = () => {
         initializeSocket(project._id);
 
         receiveMessage("project-message", (data) => {
+            if (data.isAI) {
+                setIsZenithThinking(false);
+            }
+
             setMessages((prev) => [...prev, data]);
+        });
+
+        receiveMessage("zenith-thinking", () => {
+            setIsZenithThinking(true);
         });
 
         return () => {
@@ -87,11 +96,11 @@ const Project = () => {
     }, [project]);
 
     useEffect(() => {
-    if (!messagesContainerRef.current) return;
+        if (!messagesContainerRef.current) return;
 
-    messagesContainerRef.current.scrollTop =
-        messagesContainerRef.current.scrollHeight;
-}, [messages]);
+        messagesContainerRef.current.scrollTop =
+            messagesContainerRef.current.scrollHeight;
+    }, [messages]);
 
     const addCollaborator = async () => {
         try {
@@ -161,9 +170,9 @@ const Project = () => {
                 {/* Messages */}
 
                 <div
-    ref={messagesContainerRef}
-    className="flex-1 overflow-y-auto p-5 space-y-3"
->
+                    ref={messagesContainerRef}
+                    className="flex-1 overflow-y-auto p-5 space-y-3"
+                >
                     {messages.length === 0 ? (
                         <div className="flex h-full items-center justify-center">
                             <div className="text-center">
@@ -180,6 +189,8 @@ const Project = () => {
                         </div>
                     ) : (
                         messages.map((msg, index) => (
+
+
                             <div
                                 key={index}
                                 className={`mb-4 flex ${msg.sender === user._id ? "justify-end" : "justify-start"
@@ -220,8 +231,23 @@ const Project = () => {
                                 </div>
                             </div>
                         ))
+
+
                     )}
-                    
+                    {isZenithThinking && (
+                        <div className="mb-4 flex justify-start">
+                            <div className="max-w-[75%] rounded-2xl bg-[#222] px-4 py-3 text-white">
+                                <p className="mb-2 text-xs font-semibold text-gray-400">
+                                    zenith
+                                </p>
+
+                                <p className="animate-pulse text-sm italic text-gray-300">
+                                    Thinking...
+                                </p>
+                            </div>
+                        </div>
+                    )}
+
                 </div>
 
                 {/* Message Box */}

@@ -8,6 +8,7 @@ import app from "./app.js";
 import projectModel from "./models/project.model.js";
 import userModel from "./models/user.model.js";
 import Message from "./models/message.model.js";
+import { generateResult } from "./services/ai.service.js";
 
 const port = process.env.PORT || 3000;
 const server = http.createServer(app);
@@ -65,17 +66,53 @@ io.on("connection", (socket) => {
   socket.join(socket.project._id.toString());
 
   socket.on("project-message", async (data) => {
-    const message = await Message.create({
-      project: socket.project._id,
-      sender: socket.user._id,
-      email: socket.user.email,
-      message: data.message,
-    });
+    try {
 
-    io.to(socket.project._id.toString()).emit("project-message", {
-      ...message.toObject(),
-      timestamp: message.createdAt,
-    });
+      // 1. Save and broadcast the user's message
+      const userMessage = await Message.create({
+        project: socket.project._id,
+        sender: socket.user._id,
+        email: socket.user.email,
+        message: data.message,
+      });
+
+      io.to(socket.project._id.toString()).emit("project-message", {
+        ...userMessage.toObject(),
+        timestamp: userMessage.createdAt,
+      });
+
+      // 2. If it's not for Zenith, stop here
+      if (!data.message.toLowerCase().startsWith("@zenith")) {
+        return;
+      }
+
+      // 3. Remove the @zenith mention
+      const prompt = data.message.replace(/^@zenith\s*/i, "");
+
+      // 4. Get Zenith's response
+      io.to(socket.project._id.toString()).emit("zenith-thinking", {
+        isThinking: true,
+      });
+
+      const result = await generateResult(prompt);
+
+      // 5. Save Zenith's response
+      const aiMessage = await Message.create({
+        project: socket.project._id,
+        sender: null,
+        email: "zenith@ai",
+        message: result,
+        isAI: true,
+      });
+
+      // 6. Broadcast Zenith's response
+      io.to(socket.project._id.toString()).emit("project-message", {
+        ...aiMessage.toObject(),
+        timestamp: aiMessage.createdAt,
+      });
+    } catch (error) {
+      console.error("Socket Error:", error);
+    }
   });
 
   socket.on("disconnect", () => {

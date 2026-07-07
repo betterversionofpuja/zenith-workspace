@@ -6,6 +6,7 @@ import cors from "cors";
 import userRoutes from "./routes/user.routes.js";
 import projectRoutes from "./routes/project.routes.js";
 import messageRoutes from "./routes/message.routes.js";
+import aiRouter from "./routes/ai.routes.js";
 
 connect();
 
@@ -25,6 +26,7 @@ app.use(cookieParser());
 app.use("/users", userRoutes);
 app.use("/projects", projectRoutes);
 app.use("/messages", messageRoutes);
+app.use("/ai", aiRouter);
 
 app.get("/", (req, res) => {
     res.send("Hello, Express!");

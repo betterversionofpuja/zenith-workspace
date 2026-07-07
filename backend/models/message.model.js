@@ -11,7 +11,6 @@ const messageSchema = new mongoose.Schema(
     sender: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
-      required: true,
     },
 
     email: {
@@ -22,6 +21,11 @@ const messageSchema = new mongoose.Schema(
     message: {
       type: String,
       required: true,
+    },
+
+    isAI: {
+      type: Boolean,
+      default: false,
     },
   },
   {
