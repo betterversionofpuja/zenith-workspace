@@ -29,4 +29,34 @@ router.get('/get-project/:projectId',
     projectController.getProjectById
 )
 
+router.put(
+  "/update-file-tree/:projectId",
+  authMiddleware.authUser,
+  projectController.updateFileTree
+);
+
+router.post(
+  "/:projectId/file",
+  authMiddleware.authUser,
+  projectController.createFile
+);
+
+router.post(
+  "/:projectId/folder",
+  authMiddleware.authUser,
+  projectController.createFolder
+);
+
+router.patch(
+  "/:projectId/rename",
+  authMiddleware.authUser,
+  projectController.renameItem
+);
+
+router.delete(
+  "/:projectId/node",
+  authMiddleware.authUser,
+  projectController.deleteItem
+);
+
 export default router;

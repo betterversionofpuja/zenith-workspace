@@ -1,5 +1,11 @@
 import projectModel from '../models/project.model.js';
 import mongoose from "mongoose";
+import {
+  addFile,
+  addFolder,
+  renameNode,
+  deleteNode,
+} from "../utils/fileTree.js";
 
 export const createProject = async ({
     name, userId
@@ -105,3 +111,43 @@ export const getProjectById = async ({ projectId }) => {
 
     return project;
 }
+
+export const createFile = async ({ projectId, folderPath, fileName }) => {
+  const project = await projectModel.findById(projectId);
+
+  project.fileTree = addFile(project.fileTree || {}, folderPath, fileName);
+
+  await project.save();
+
+  return project.fileTree;
+};
+
+export const createFolder = async ({ projectId, folderPath, folderName }) => {
+  const project = await projectModel.findById(projectId);
+
+  project.fileTree = addFolder(project.fileTree || {}, folderPath, folderName);
+
+  await project.save();
+
+  return project.fileTree;
+};
+
+export const renameItem = async ({ projectId, path, newName }) => {
+  const project = await projectModel.findById(projectId);
+
+  project.fileTree = renameNode(project.fileTree || {}, path, newName);
+
+  await project.save();
+
+  return project.fileTree;
+};
+
+export const deleteItem = async ({ projectId, path }) => {
+  const project = await projectModel.findById(projectId);
+
+  project.fileTree = deleteNode(project.fileTree || {}, path);
+
+  await project.save();
+
+  return project.fileTree;
+};
