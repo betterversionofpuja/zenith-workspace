@@ -180,3 +180,38 @@ export const deleteItem = async (req, res) => {
     res.status(400).json({ error: err.message });
   }
 };
+
+export const renameProject = async (req, res) => {
+  try {
+    const { projectId } = req.params;
+    const { name } = req.body;
+
+    const project = await projectModel.findByIdAndUpdate(
+      projectId,
+      { name },
+      { new: true }
+    );
+
+    return res.status(200).json(project);
+  } catch (error) {
+    return res.status(500).json({
+      error: error.message,
+    });
+  }
+};
+
+export const deleteProject = async (req, res) => {
+  try {
+    const { projectId } = req.params;
+
+    await projectModel.findByIdAndDelete(projectId);
+
+    return res.status(200).json({
+      message: "Project deleted successfully",
+    });
+  } catch (error) {
+    return res.status(500).json({
+      error: error.message,
+    });
+  }
+};

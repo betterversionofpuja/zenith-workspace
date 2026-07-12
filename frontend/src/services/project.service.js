@@ -22,3 +22,23 @@ export const deleteItem = (projectId, path) =>
   axiosInstance.delete(`/projects/${projectId}/node`, {
     data: { path },
   });
+
+export const renameProject = (projectId, name) => {
+  return axiosInstance.patch(`/projects/rename/${projectId}`, {
+    name,
+  });
+};
+
+export const deleteProject = (projectId) => {
+  return axiosInstance.delete(`/projects/delete/${projectId}`);
+};
+
+export const clearProjectChat = (projectId) => {
+  return axiosInstance.delete(`/messages/project/${projectId}`);
+};
+
+export const editMessage = (messageId, message) => {
+  return axiosInstance.patch(`/messages/${messageId}`, {
+    message,
+  });
+};

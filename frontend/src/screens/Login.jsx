@@ -22,66 +22,60 @@ const Login = () => {
   });
 
   const handleChange = (e) => {
-  setFormData((prev) => ({
-    ...prev,
-    [e.target.name]: e.target.value,
-  }));
-};
+    setFormData((prev) => ({
+      ...prev,
+      [e.target.name]: e.target.value,
+    }));
+  };
 
   const handleSubmit = async (e) => {
-  e.preventDefault();
+    e.preventDefault();
 
-  try {
-    setLoading(true);
+    try {
+      setLoading(true);
 
-    const response = await axiosInstance.post("/users/login", formData);
+      const response = await axiosInstance.post(
+        "/users/login",
+        formData
+      );
 
-    // Save JWT
-    localStorage.setItem("token", response.data.token);
+      localStorage.setItem("token", response.data.token);
+      localStorage.setItem(
+        "user",
+        JSON.stringify(response.data.user)
+      );
 
-    // Save user
-    localStorage.setItem(
-      "user",
-      JSON.stringify(response.data.user)
-    );
+      setUser(response.data.user);
 
-    // Update Context
-    setUser(response.data.user);
+      navigate("/");
+    } catch (error) {
+      console.error(error);
 
-    // Redirect to Home
-    navigate("/");
-  } catch (error) {
-    console.error(error);
-
-    alert(
-      error.response?.data?.errors ||
-      error.response?.data?.message ||
-      "Login failed"
-    );
-  } finally {
-    setLoading(false);
-  }
-};
-
+      alert(
+        error.response?.data?.errors ||
+          error.response?.data?.message ||
+          "Login failed"
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-black px-4">
+      {/* Background Glow */}
+      <div className="absolute bottom-[-220px] left-1/2 h-[500px] w-[900px] -translate-x-1/2 rounded-full bg-blue-600/10 blur-[200px]" />
 
-      {/* Blue Glow */}
-      <div className="absolute bottom-[-170px] h-[380px] w-[700px] rounded-full bg-blue-700/20 blur-[160px]" />
-
-      {/* Login Card */}
-      <div className="relative w-full max-w-md rounded-[30px] border border-blue-500/20 bg-[#121212]/95 px-8 py-10 shadow-[0_0_60px_rgba(37,99,235,0.15)] backdrop-blur-xl">
-
-        <h1 className="mb-10 text-center text-5xl font-extralight tracking-wide text-white">
+      {/* Card */}
+      <div className="relative w-full max-w-[430px] rounded-2xl border border-white/10 bg-[#121212]/95 px-8 py-8 shadow-xl backdrop-blur-xl">
+        <h1 className="mb-8 text-center text-4xl font-light tracking-tight text-white">
           Log in
         </h1>
 
         <form onSubmit={handleSubmit} className="space-y-5">
-
           {/* Email */}
-          <div className="relative">
-            <HiOutlineMail className="absolute left-5 top-1/2 -translate-y-1/2 text-xl text-gray-500" />
+          <div className="group relative">
+            <HiOutlineMail className="absolute left-5 top-1/2 -translate-y-1/2 text-xl text-gray-500 transition group-focus-within:text-blue-400" />
 
             <input
               type="email"
@@ -90,13 +84,13 @@ const Login = () => {
               value={formData.email}
               onChange={handleChange}
               required
-              className="h-12 w-full rounded-full border border-blue-500/40 bg-[#171717] pl-14 pr-5 text-sm text-white placeholder:text-gray-500 outline-none transition-all duration-300 focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+              className="h-12 w-full rounded-full border border-white/10 bg-[#181818] pl-14 pr-5 text-sm text-white placeholder:text-gray-500 outline-none transition-all duration-200 focus:border-blue-500/70"
             />
           </div>
 
           {/* Password */}
-          <div className="relative">
-            <HiOutlineLockClosed className="absolute left-5 top-1/2 -translate-y-1/2 text-xl text-gray-500" />
+          <div className="group relative">
+            <HiOutlineLockClosed className="absolute left-5 top-1/2 -translate-y-1/2 text-xl text-gray-500 transition group-focus-within:text-blue-400" />
 
             <input
               type={showPassword ? "text" : "password"}
@@ -105,15 +99,19 @@ const Login = () => {
               value={formData.password}
               onChange={handleChange}
               required
-              className="h-12 w-full rounded-full border border-blue-500/40 bg-[#171717] pl-14 pr-14 text-sm text-white placeholder:text-gray-500 outline-none transition-all duration-300 focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+              className="h-12 w-full rounded-full border border-white/10 bg-[#181818] pl-14 pr-14 text-sm text-white placeholder:text-gray-500 outline-none transition-all duration-200 focus:border-blue-500/70"
             />
 
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
-              className="absolute right-5 top-1/2 -translate-y-1/2 text-xl text-blue-500"
+              className="absolute right-5 top-1/2 -translate-y-1/2 text-xl text-gray-500 transition hover:text-blue-400"
             >
-              {showPassword ? <HiOutlineEyeOff /> : <HiOutlineEye />}
+              {showPassword ? (
+                <HiOutlineEyeOff />
+              ) : (
+                <HiOutlineEye />
+              )}
             </button>
           </div>
 
@@ -121,21 +119,21 @@ const Login = () => {
           <button
             type="submit"
             disabled={loading}
-            className="mt-7 h-12 w-full rounded-full bg-[#252525] text-lg font-medium text-white transition-all duration-300 hover:bg-[#303030] disabled:cursor-not-allowed disabled:opacity-60"
+            className="mt-2 h-11 w-full rounded-full bg-[#2563eb] text-base font-medium text-white transition hover:bg-[#3b82f6] disabled:cursor-not-allowed disabled:opacity-60"
           >
             {loading ? "Logging in..." : "Log in"}
           </button>
 
+          {/* Register Link */}
           <p className="pt-2 text-center text-sm text-gray-400">
             Don't have an account?{" "}
             <Link
               to="/register"
-              className="font-medium text-blue-500 transition hover:text-blue-400"
+              className="font-medium text-blue-400 transition hover:text-blue-300"
             >
               Sign up
             </Link>
           </p>
-
         </form>
       </div>
     </div>

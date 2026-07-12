@@ -59,4 +59,17 @@ router.delete(
   projectController.deleteItem
 );
 
+router.patch(
+  "/rename/:projectId",
+  authMiddleware.authUser,
+  body("name").isString().notEmpty(),
+  projectController.renameProject
+);
+
+router.delete(
+  "/delete/:projectId",
+  authMiddleware.authUser,
+  projectController.deleteProject
+);
+
 export default router;

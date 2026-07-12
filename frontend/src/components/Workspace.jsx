@@ -325,7 +325,7 @@ const Workspace = ({
     >
       {/* Explorer */}
       <Panel defaultSize={25} minSize={15} maxSize={40}>
-        <aside className="h-full overflow-auto border-r border-white/10 bg-[#111111]">
+        <aside className="h-full overflow-auto border-r border-white/10 bg-[#0f0f10]">
           <div className="flex items-center justify-between border-b border-white/10 px-4 py-3">
             <span className="text-xs font-semibold uppercase tracking-[0.2em] text-gray-400">
               Explorer
@@ -381,18 +381,18 @@ const Workspace = ({
           </div>
         </aside>
       </Panel>
-      <PanelResizeHandle className="w-[3px] bg-white/10 hover:bg-blue-500 transition-colors" />
+      <PanelResizeHandle className="w-px bg-white/5 hover:bg-blue-500/40 transition-colors duration-150" />
 
       {/* Editor */}
       <Panel defaultSize={75}>
         <section className="flex h-full flex-col">
-          <div className="flex h-11 overflow-x-auto whitespace-nowrap border-b border-white/10 bg-[#16181d]">
+          <div className="flex h-11 overflow-x-auto whitespace-nowrap bg-[#16181d]">
             {openFiles.map((file) => (
               <button
                 key={file.name}
                 onClick={() => setActiveFile(file)}
-                className={`flex shrink-0 items-center gap-2 border-r border-white/10 px-4 text-sm ${activeFile?.name === file.name
-                  ? "bg-[#1f232b] text-white"
+                className={`flex shrink-0 items-center gap-2 px-4 text-sm ${activeFile?.name === file.name
+                  ? "bg-[#0b0b0d] text-white"
                   : "text-gray-400 hover:bg-white/5"
                   }`}
               >

@@ -12,12 +12,19 @@ import {
     HiOutlinePaperClip,
     HiOutlineEmojiHappy,
     HiOutlineX,
+    HiOutlineDotsVertical,
+    HiOutlinePencil,
 } from "react-icons/hi";
 import { initializeSocket, receiveMessage, sendMessage, disconnectSocket, } from "../config/socket";
 import { UserContext } from "../context/user.context.jsx";
 import Markdown from 'markdown-to-jsx';
 import Workspace from "../components/Workspace.jsx";
 import TextareaAutosize from "react-textarea-autosize";
+import {
+    clearProjectChat,
+    editMessage,
+} from "../services/project.service";
+
 
 const Project = () => {
 
@@ -32,6 +39,10 @@ const Project = () => {
     const messagesContainerRef = useRef(null);
     const [isZenithThinking, setIsZenithThinking] = useState(false);
     const [fileTree, setFileTree] = useState({});
+    const [showProjectMenu, setShowProjectMenu] = useState(false);
+    const [editingMessageId, setEditingMessageId] = useState(null);
+    const [editedMessage, setEditedMessage] = useState("");
+    const [showEditModal, setShowEditModal] = useState(false);
     console.log(messages);
 
     console.log(projectId);
@@ -186,6 +197,30 @@ const Project = () => {
         }
     };
 
+    const handleSaveEdit = async () => {
+        if (!editedMessage.trim()) return;
+
+        await editMessage(editingMessageId, editedMessage);
+
+        setMessages((prev) =>
+            prev.map((msg) =>
+                msg._id === editingMessageId
+                    ? { ...msg, message: editedMessage }
+                    : msg
+            )
+        );
+
+        sendMessage("project-message", {
+            message: editedMessage,
+            sender: user._id,
+            email: user.email,
+        });
+
+        setShowEditModal(false);
+        setEditingMessageId(null);
+        setEditedMessage("");
+    };
+
 
 
     return (
@@ -198,28 +233,57 @@ const Project = () => {
                 {/* ================= LEFT PANEL ================= */}
 
                 <Panel defaultSize={30} minSize={20} maxSize={45}>
-                    <section className="relative flex h-full flex-col border-r border-blue-500/20 bg-[#121212]/95 backdrop-blur-xl">
+                    <section className="relative flex h-full flex-col bg-[#121212]/95 backdrop-blur-xl">
                         {/* Header */}
 
-                        <div className="sticky top-0 z-20 flex items-center justify-between border-b border-blue-500/20 bg-[#121212]/95 px-6 py-5 backdrop-blur-xl">
+                        <div className="sticky top-0 z-20 flex items-center justify-between border-b border-white/10 bg-[#121212] px-5 py-3">
 
-                            <div className="flex items-center gap-4">
+                            <div className="flex items-center justify-between w-full">
 
-                                <button
-                                    onClick={() => setIsSidebarOpen(true)}
-                                    className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[#1b1b1b] shadow-[0_0_20px_rgba(37,99,235,0.15)] transition hover:bg-[#202020]"
-                                >
-                                    <HiOutlineUsers className="text-3xl text-blue-400" />
-                                </button>
+                                <div className="flex items-center gap-3">
+                                    <button
+                                        onClick={() => setIsSidebarOpen(true)}
+                                        className="flex h-10 w-10 items-center justify-center rounded-lg bg-[#1b1b1b] hover:bg-[#202020]"
+                                    >
+                                        <HiOutlineUsers className="text-xl text-blue-400" />
+                                    </button>
 
-                                <div>
-                                    <h1 className="text-2xl font-semibold text-white">
-                                        {project?.name}
-                                    </h1>
+                                    <div>
+                                        <h1 className="text-xl font-semibold leading-none text-white">
+                                            {project?.name}
+                                        </h1>
 
-                                    <p className="mt-1 text-sm text-gray-400">
-                                        {project?.users.length} Collaborators
-                                    </p>
+                                        <p className="mt-1 text-xs text-gray-500">
+                                            {project?.users.length} collaborators
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <div className="relative">
+                                    <button
+                                        onClick={() => setShowProjectMenu((prev) => !prev)}
+                                        className="rounded-md p-2 text-gray-500 transition hover:bg-[#222] hover:text-white"
+                                    >
+                                        <HiOutlineDotsVertical className="text-lg" />
+                                    </button>
+
+                                    {showProjectMenu && (
+                                        <div className="absolute right-0 top-10 z-50 w-40 rounded-lg border border-white/10 bg-[#1b1b1b] py-1 shadow-xl">
+                                            <button
+                                                onClick={async () => {
+                                                    if (!window.confirm("Clear all chat messages?")) return;
+
+                                                    await clearProjectChat(projectId);
+
+                                                    setMessages([]);
+                                                    setShowProjectMenu(false);
+                                                }}
+                                                className="w-full px-4 py-2 text-left text-sm text-red-400 hover:bg-[#2a2a2a]"
+                                            >
+                                                Clear Chat
+                                            </button>
+                                        </div>
+                                    )}
                                 </div>
 
                             </div>
@@ -252,26 +316,44 @@ const Project = () => {
 
                                     <div
                                         key={index}
-                                        className={`mb-4 flex ${msg.sender === user._id ? "justify-end" : "justify-start"
+                                        className={`group mb-5 flex ${msg.sender === user._id
+                                            ? "justify-end"
+                                            : "justify-start"
                                             }`}
                                     >
                                         <div
-                                            className={`max-w-[75%] rounded-2xl px-4 py-3 ${msg.sender === user._id
-                                                ? "bg-blue-600 text-white"
-                                                : "bg-[#222] text-white"
+                                            style={{ maxWidth: "75%" }}
+                                            className={`relative inline-block min-w-[180px] max-w-fit rounded-lg border px-3 py-1 shadow-sm ${msg.sender === user._id
+                                                ? "border-blue-500/20 bg-[#1d4ed820] text-white"
+                                                : "border-white/10 bg-[#1a1c21] text-white"
                                                 }`}
                                         >
                                             <p
-                                                className={`mb-2 text-xs font-semibold ${msg.sender === user._id
-                                                    ? "text-blue-100"
+                                                className={`mb-1 text-[11px] font-medium ${msg.sender === user._id
+                                                    ? "text-blue-300/80"
                                                     : "text-gray-400"
                                                     }`}
                                             >
-                                                {msg.email.split("@")[0]}
+                                                {msg.email.split("@")[0].charAt(0).toUpperCase() +
+                                                    msg.email.split("@")[0].slice(1)}
                                             </p>
 
-                                            <div className="flex items-end justify-between gap-4">
-                                                <div className="overflow-x-auto whitespace-pre-wrap break-words text-[15px] leading-7">
+                                            {msg.sender === user._id && (
+                                                <button
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        setEditingMessageId(msg._id);
+                                                        setEditedMessage(msg.message);
+                                                        setShowEditModal(true);
+                                                    }}
+                                                    className="absolute right-2 top-2 z-10 opacity-0 transition group-hover:opacity-100"
+                                                >
+                                                    <HiOutlinePencil className="text-[11px] text-gray-500 hover:text-white" />
+                                                </button>
+                                            )}
+
+                                            <div className="relative">
+                                                <div className="whitespace-pre-wrap break-words pr-12 text-[13px] leading-[1.55]">
                                                     {msg.isAI ? (
                                                         <Markdown>{msg.message}</Markdown>
                                                     ) : (
@@ -280,8 +362,8 @@ const Project = () => {
                                                 </div>
 
                                                 <span
-                                                    className={`shrink-0 text-[11px] ${msg.sender === user._id
-                                                        ? "text-blue-100/70"
+                                                    className={`absolute bottom-0 right-0 text-[11px] ${msg.sender === user._id
+                                                        ? "text-blue-200/60"
                                                         : "text-gray-500"
                                                         }`}
                                                 >
@@ -290,8 +372,7 @@ const Project = () => {
                                                         minute: "2-digit",
                                                     })}
                                                 </span>
-                                            </div>
-                                        </div>
+                                            </div>                                      </div>
                                     </div>
                                 ))
 
@@ -300,7 +381,7 @@ const Project = () => {
                             {isZenithThinking && (
                                 <div className="mb-4 flex justify-start">
                                     <div className="max-w-[75%] rounded-2xl bg-[#222] px-4 py-3 text-white">
-                                        <p className="mb-2 text-xs font-semibold text-gray-400">
+                                        <p className="mb-1 text-xs font-semibold text-gray-400">
                                             zenith
                                         </p>
 
@@ -315,14 +396,14 @@ const Project = () => {
 
                         {/* Message Box */}
 
-                        <div className="border-t border-blue-500/20 bg-[#121212]/95 p-5">
-                            <div className="flex items-end gap-3 rounded-2xl border border-blue-500/20 bg-[#1a1a1a] px-4 py-3 shadow-[0_0_20px_rgba(37,99,235,0.08)]">
+                        <div className="bg-[#111111] p-3">
+                            <div className="flex items-end gap-1 rounded-lg border border-white/10 bg-[#16181d] px-3 py-2 transition-colors focus-within:border-blue-500/40">
 
                                 <TextareaAutosize
                                     minRows={1}
                                     maxRows={6}
                                     value={message}
-                                    placeholder="Type a message..."
+                                    placeholder="Ask Zenith..."
                                     onChange={(e) => setMessage(e.target.value)}
                                     onKeyDown={(e) => {
                                         if (e.key === "Enter" && !e.shiftKey) {
@@ -330,11 +411,12 @@ const Project = () => {
                                             send();
                                         }
                                     }}
-                                    className="flex-1 resize-none bg-transparent text-white placeholder:text-gray-500 outline-none"
+                                    className="flex-1 resize-none bg-transparent text-sm leading-6 text-white placeholder:text-gray-500 outline-none"
                                 />
+
                                 <button
                                     onClick={send}
-                                    className="mb-1 rounded-full bg-blue-600 p-3 text-white shadow-[0_0_20px_rgba(37,99,235,0.35)] transition-all duration-300 hover:scale-105 hover:bg-blue-700 hover:shadow-[0_0_35px_rgba(37,99,235,0.55)]"
+                                    className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md text-gray-400 transition hover:bg-white/5 hover:text-blue-400"
                                 >
                                     <HiOutlinePaperAirplane size={18} />
                                 </button>
@@ -344,7 +426,9 @@ const Project = () => {
 
                     </section>
                 </Panel>
-                <PanelResizeHandle className="w-[3px] bg-white/10 hover:bg-blue-500 transition-colors" />
+                <PanelResizeHandle
+                    className="w-px bg-white/10 hover:bg-blue-500/40 transition-colors"
+                />
 
                 {/* ================= RIGHT PANEL ================= */}
 
@@ -383,71 +467,76 @@ const Project = () => {
                 {/* ================= COLLABORATORS SIDEBAR ================= */}
 
                 <div
-                    className={`fixed left-0 top-0 z-50 h-screen w-[360px] border-r border-blue-500/20 bg-[#121212]/95 backdrop-blur-xl shadow-[0_0_40px_rgba(37,99,235,0.15)] transition-transform duration-300 ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"
+                    className={`fixed left-0 top-0 z-50 h-screen w-[330px] border-r border-white/10 bg-[#121212] transition-transform duration-300 ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"
                         }`}
                 >
+                    {/* Header */}
 
-                    {/* Sidebar Header */}
+                    <div className="border-b border-white/10 px-6 py-5">
+                        <div className="flex items-start justify-between">
+                            <div>
+                                <h2 className="text-xl font-semibold text-white">
+                                    Collaborators
+                                </h2>
 
-                    <div className="flex items-center justify-between border-b border-blue-500/20 px-6 py-5">
+                                <p className="mt-1 text-xs text-gray-500">
+                                    {project?.users.length} Members
+                                </p>
+                            </div>
 
-                        <div>
-                            <h2 className="text-2xl font-semibold text-white">
-                                Collaborators
-                            </h2>
-
-                            <p className="mt-1 text-sm text-gray-400">
-                                {project?.users.length} Members
-                            </p>
+                            <button
+                                onClick={() => setIsSidebarOpen(false)}
+                                className="rounded-md p-2 text-gray-500 transition hover:bg-[#1e1e1e] hover:text-white"
+                            >
+                                <HiOutlineX size={20} />
+                            </button>
                         </div>
-
-                        <button
-                            onClick={() => setIsSidebarOpen(false)}
-                            className="rounded-full p-2 text-gray-400 transition hover:bg-[#222] hover:text-white"
-                        >
-                            <HiOutlineX size={24} />
-                        </button>
-
                     </div>
 
                     {/* Members */}
 
-                    <div className="space-y-4 p-5">
-                        {project?.users.map((user, index) => (
-                            <div
-                                key={user._id}
-                                className="flex items-center gap-4 rounded-2xl bg-[#1b1b1b] p-4 transition hover:bg-[#232323]"
-                            >
-                                <div className="grid h-12 w-12 place-items-center rounded-full bg-blue-600 text-lg font-semibold text-white flex-shrink-0">
-                                    {user.email.charAt(0).toUpperCase()}
-                                </div>
+                    <div className="space-y-3 overflow-y-auto p-5 pb-28">
+                        {project?.users.map((user, index) => {
+                            const username = user.email.split("@")[0];
 
-                                <div>
-                                    <h3 className="truncate font-medium text-white">
-                                        {user.email}
-                                    </h3>
+                            return (
+                                <div
+                                    key={user._id}
+                                    className="flex items-center gap-3 rounded-xl border border-white/5 bg-[#191919] p-3 transition hover:border-blue-500/20 hover:bg-[#202020]"
+                                >
+                                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-blue-600 font-semibold text-white">
+                                        {username.charAt(0).toUpperCase()}
+                                    </div>
 
-                                    <p className="text-sm text-gray-500">
-                                        {index === 0 ? "Owner" : "Collaborator"}
-                                    </p>
+                                    <div className="min-w-0 flex-1">
+                                        <h3 className="truncate text-[15px] font-medium text-white">
+                                            {username.charAt(0).toUpperCase() + username.slice(1)}
+                                        </h3>
+
+                                        <p className="truncate text-xs text-gray-500">
+                                            {user.email}
+                                        </p>
+
+                                        <p className="mt-1 text-[11px] text-blue-400">
+                                            {index === 0 ? "Owner" : "Collaborator"}
+                                        </p>
+                                    </div>
                                 </div>
-                            </div>
-                        ))}
+                            );
+                        })}
                     </div>
 
                     {/* Bottom Button */}
 
-                    <div className="absolute bottom-0 left-0 w-full border-t border-blue-500/20 bg-[#121212]/95 p-5">
-
+                    <div className="absolute bottom-0 left-0 w-full border-t border-white/10 bg-[#121212] p-5">
                         <button
                             onClick={() => setIsAddModalOpen(true)}
-                            className="w-full rounded-xl bg-blue-600 py-3 font-medium text-white transition hover:bg-blue-700"
+                            className="flex w-full items-center justify-center gap-2 rounded-lg bg-blue-600 py-3 font-medium text-white transition hover:bg-blue-700"
                         >
-                            + Add Collaborator
+                            <span className="text-lg">+</span>
+                            <span>Add Collaborator</span>
                         </button>
-
                     </div>
-
                 </div>
 
                 {isAddModalOpen && (
@@ -487,8 +576,50 @@ const Project = () => {
                                 Add Collaborator
                             </button>
 
+
+
                         </div>
                     </>
+                )}
+
+                {showEditModal && (
+                    <div
+                        className="fixed inset-0 z-[999] flex items-center justify-center bg-black/70 backdrop-blur-sm"
+                        onClick={() => setShowEditModal(false)}
+                    >
+                        <div
+                            onClick={(e) => e.stopPropagation()}
+                            className="w-[650px] rounded-2xl border border-white/10 bg-[#181818] p-6"
+                        >
+                            <h2 className="mb-5 text-xl font-semibold text-white">
+                                Edit Message
+                            </h2>
+
+                            <TextareaAutosize
+                                autoFocus
+                                minRows={8}
+                                value={editedMessage}
+                                onChange={(e) => setEditedMessage(e.target.value)}
+                                className="w-full resize-none rounded-xl border border-white/10 bg-[#111] p-4 text-[15px] leading-7 text-white outline-none focus:border-blue-600/20"
+                            />
+
+                            <div className="mt-6 flex justify-end gap-3">
+                                <button
+                                    onClick={() => setShowEditModal(false)}
+                                    className="rounded-lg bg-[#2b2b2b] px-5 py-2 text-white"
+                                >
+                                    Cancel
+                                </button>
+
+                                <button
+                                    onClick={handleSaveEdit}
+                                    className="rounded-lg bg-[#173d9d] px-5 py-2 text-white hover:bg-[#1c4ed8]"
+                                >
+                                    Save & Resend
+                                </button>
+                            </div>
+                        </div>
+                    </div>
                 )}
 
                 {/* Overlay */}

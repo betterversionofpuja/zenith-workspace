@@ -151,3 +151,4 @@ export const deleteItem = async ({ projectId, path }) => {
 
   return project.fileTree;
 };
+
