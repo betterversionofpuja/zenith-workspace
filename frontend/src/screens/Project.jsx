@@ -17,6 +17,7 @@ import { initializeSocket, receiveMessage, sendMessage, disconnectSocket, } from
 import { UserContext } from "../context/user.context.jsx";
 import Markdown from 'markdown-to-jsx';
 import Workspace from "../components/Workspace.jsx";
+import TextareaAutosize from "react-textarea-autosize";
 
 const Project = () => {
 
@@ -270,7 +271,7 @@ const Project = () => {
                                             </p>
 
                                             <div className="flex items-end justify-between gap-4">
-                                                <div className="overflow-x-auto break-words text-[15px] leading-relaxed">
+                                                <div className="overflow-x-auto whitespace-pre-wrap break-words text-[15px] leading-7">
                                                     {msg.isAI ? (
                                                         <Markdown>{msg.message}</Markdown>
                                                     ) : (
@@ -315,39 +316,30 @@ const Project = () => {
                         {/* Message Box */}
 
                         <div className="border-t border-blue-500/20 bg-[#121212]/95 p-5">
+                            <div className="flex items-end gap-3 rounded-2xl border border-blue-500/20 bg-[#1a1a1a] px-4 py-3 shadow-[0_0_20px_rgba(37,99,235,0.08)]">
 
-                            <div className="flex h-14 items-center gap-3 rounded-2xl border border-blue-500/20 bg-[#1a1a1a] px-4 shadow-[0_0_20px_rgba(37,99,235,0.08)]">
-
-                                <input
-                                    type="text"
-                                    placeholder="Type a message..."
+                                <TextareaAutosize
+                                    minRows={1}
+                                    maxRows={6}
                                     value={message}
+                                    placeholder="Type a message..."
                                     onChange={(e) => setMessage(e.target.value)}
                                     onKeyDown={(e) => {
-                                        if (e.key === "Enter") {
+                                        if (e.key === "Enter" && !e.shiftKey) {
+                                            e.preventDefault();
                                             send();
                                         }
                                     }}
-                                    className="flex-1 bg-transparent text-white placeholder:text-gray-500 outline-none"
+                                    className="flex-1 resize-none bg-transparent text-white placeholder:text-gray-500 outline-none"
                                 />
-
-                                <button className="rounded-full p-2 text-gray-400 transition hover:bg-[#232323] hover:text-white">
-                                    <HiOutlinePaperClip size={22} />
-                                </button>
-
-                                <button className="rounded-full p-2 text-gray-400 transition hover:bg-[#232323] hover:text-white">
-                                    <HiOutlineEmojiHappy size={22} />
-                                </button>
-
                                 <button
                                     onClick={send}
-                                    className="rounded-full bg-blue-600 p-3 text-white shadow-[0_0_20px_rgba(37,99,235,0.35)] transition-all duration-300 hover:scale-105 hover:bg-blue-700 hover:shadow-[0_0_35px_rgba(37,99,235,0.55)]"
+                                    className="mb-1 rounded-full bg-blue-600 p-3 text-white shadow-[0_0_20px_rgba(37,99,235,0.35)] transition-all duration-300 hover:scale-105 hover:bg-blue-700 hover:shadow-[0_0_35px_rgba(37,99,235,0.55)]"
                                 >
                                     <HiOutlinePaperAirplane size={18} />
                                 </button>
 
                             </div>
-
                         </div>
 
                     </section>
@@ -362,7 +354,8 @@ const Project = () => {
                         <div className="absolute right-[-250px] top-[-150px] h-[450px] w-[450px] rounded-full bg-blue-700/10 blur-[180px]" />
 
                         <Workspace
-                        projectId={projectId}
+                            projectId={projectId}
+                            projectName={project?.name}
                             fileTree={fileTree}
                             onFileChange={(filePath, content) => {
                                 setFileTree((prev) => {

@@ -66,10 +66,11 @@ const getLanguage = (fileName) => {
 };
 
 const Workspace = ({
-  projectId,
   fileTree = {},
   onFileChange,
   onTreeChange,
+  projectId,
+  projectName,
 }) => {
   const [openFiles, setOpenFiles] = useState([]);
   const [activeFile, setActiveFile] = useState(null);
@@ -148,89 +149,89 @@ const Workspace = ({
   }, []);
 
   const createFile = async () => {
-  if (!newFileName.trim()) return;
+    if (!newFileName.trim()) return;
 
-  const folderPath =
-    contextMenu.type === "folder"
-      ? contextMenu.target
-      : "";
+    const folderPath =
+      contextMenu.type === "folder"
+        ? contextMenu.target
+        : "";
 
-  try {
-    const { data } = await createFileAPI(
-      projectId,
-      folderPath,
-      newFileName
-    );
+    try {
+      const { data } = await createFileAPI(
+        projectId,
+        folderPath,
+        newFileName
+      );
 
-    onTreeChange(data.fileTree);
+      onTreeChange(data.fileTree);
 
-    setNewFileName("");
-    setShowCreateFile(false);
-  } catch (err) {
-    console.error(err);
-  }
-};
+      setNewFileName("");
+      setShowCreateFile(false);
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   const createFolder = async () => {
-  if (!newFolderName.trim()) return;
+    if (!newFolderName.trim()) return;
 
-  const folderPath =
-    contextMenu.type === "folder"
-      ? contextMenu.target
-      : "";
+    const folderPath =
+      contextMenu.type === "folder"
+        ? contextMenu.target
+        : "";
 
-  try {
-    const { data } = await createFolderAPI(
-      projectId,
-      folderPath,
-      newFolderName
-    );
+    try {
+      const { data } = await createFolderAPI(
+        projectId,
+        folderPath,
+        newFolderName
+      );
 
-    onTreeChange(data.fileTree);
+      onTreeChange(data.fileTree);
 
-    setNewFolderName("");
-    setShowCreateFolder(false);
-  } catch (err) {
-    console.error(err);
-  }
-};
+      setNewFolderName("");
+      setShowCreateFolder(false);
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   const renameItem = async () => {
-  if (!renameValue.trim()) return;
+    if (!renameValue.trim()) return;
 
-  try {
-    const { data } = await renameItemAPI(
-      projectId,
-      contextMenu.target,
-      renameValue
-    );
+    try {
+      const { data } = await renameItemAPI(
+        projectId,
+        contextMenu.target,
+        renameValue
+      );
 
-    onTreeChange(data.fileTree);
+      onTreeChange(data.fileTree);
 
-    setShowRenameModal(false);
-    setRenameValue("");
-  } catch (err) {
-    console.error(err);
-  }
-};
+      setShowRenameModal(false);
+      setRenameValue("");
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   const deleteItem = async () => {
-  try {
-    const { data } = await deleteItemAPI(
-      projectId,
-      contextMenu.target
-    );
+    try {
+      const { data } = await deleteItemAPI(
+        projectId,
+        contextMenu.target
+      );
 
-    onTreeChange(data.fileTree);
+      onTreeChange(data.fileTree);
 
-    setContextMenu((prev) => ({
-      ...prev,
-      visible: false,
-    }));
-  } catch (err) {
-    console.error(err);
-  }
-};
+      setContextMenu((prev) => ({
+        ...prev,
+        visible: false,
+      }));
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   const renderTree = useCallback(
     (tree, path = "") => {
@@ -367,7 +368,9 @@ const Workspace = ({
                 <Folder size={17} className="text-blue-400" />
               )}
 
-              <span className="font-medium">project</span>
+              <span className="font-medium">
+                {projectName || "project"}
+              </span>
             </div>
 
             {expandedFolders.project && (
