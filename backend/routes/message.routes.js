@@ -4,6 +4,7 @@ import {
   getMessages,
   clearProjectChat,
   editMessage,
+  regenerateMessage,
 } from "../controllers/message.controller.js";
 const router = express.Router();
 
@@ -19,6 +20,12 @@ router.patch(
   "/:messageId",
   authUser,
   editMessage
+);
+
+router.post(
+  "/regenerate/:messageId",
+  authUser,
+  regenerateMessage
 );
 
 export default router;

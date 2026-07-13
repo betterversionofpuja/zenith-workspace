@@ -67,7 +67,7 @@ const Home = () => {
   return (
     <div className="relative min-h-screen overflow-hidden bg-black px-8 py-8">
       {/* Background Glow */}
-      <div className="absolute bottom-[-180px] left-1/2 h-[420px] w-[700px] -translate-x-1/2 rounded-full bg-blue-600/20 blur-[170px]" />
+      <div className="absolute bottom-[-180px] left-1/2 h-[420px] w-[700px] -translate-x-1/2 rounded-full bg-[#173D9D]/15 blur-[170px]" />
 
       <div className="relative mx-auto max-w-7xl">
         {/* Header */}
@@ -84,7 +84,7 @@ const Home = () => {
 
           <button
             onClick={() => setIsModalOpen(true)}
-            className="flex h-10 items-center gap-2 rounded-lg border border-blue-500/20 bg-blue-600 px-4 text-sm font-medium text-white transition hover:bg-blue-700"
+            className="flex h-10 items-center gap-2 rounded-lg border border-[#173D9D]/20 bg-[#173D9D] px-4 text-sm font-medium text-white transition hover:bg-[#1E4AB8]"
           >
             <HiOutlinePlus className="text-lg" />
             New Project
@@ -147,13 +147,13 @@ const Home = () => {
               placeholder="e.g. AI Code Reviewer"
               value={projectName}
               onChange={(e) => setProjectName(e.target.value)}
-              className="mt-6 h-11 w-full rounded-lg border border-white/10 bg-[#1b1b1d] px-4 text-white outline-none transition focus:border-blue-500"
+              className="mt-6 h-11 w-full rounded-lg border border-white/10 bg-[#1b1b1d] px-4 text-white outline-none transition focus:border-[#173D9D]"
             />
 
             <button
               onClick={handleCreateProject}
               disabled={loading}
-              className="mt-6 h-11 w-full rounded-lg bg-blue-600 text-sm font-medium text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-60"
+              className="mt-6 h-11 w-full rounded-lg bg-[#173D9D] text-sm font-medium text-white transition hover:bg-[#1E4AB8] disabled:cursor-not-allowed disabled:opacity-60"
             >
               {loading ? "Creating..." : "Create Project"}
             </button>

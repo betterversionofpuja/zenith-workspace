@@ -23,6 +23,7 @@ import TextareaAutosize from "react-textarea-autosize";
 import {
     clearProjectChat,
     editMessage,
+    regenerateMessage,
 } from "../services/project.service";
 
 
@@ -199,24 +200,67 @@ const Project = () => {
 
     const handleSaveEdit = async () => {
         if (!editedMessage.trim()) return;
+        const shouldRegenerate = editedMessage
+            .toLowerCase()
+            .includes("@zenith");
 
-        await editMessage(editingMessageId, editedMessage);
+        setShowEditModal(false);
 
         setMessages((prev) =>
             prev.map((msg) =>
                 msg._id === editingMessageId
-                    ? { ...msg, message: editedMessage }
+                    ? {
+                        ...msg,
+                        message: editedMessage,
+                        edited: true,
+                    }
                     : msg
             )
         );
 
-        sendMessage("project-message", {
-            message: editedMessage,
-            sender: user._id,
-            email: user.email,
-        });
+        await editMessage(editingMessageId, editedMessage);
 
-        setShowEditModal(false);
+        if (shouldRegenerate) {
+            setIsZenithThinking(true);
+
+            const response = await regenerateMessage(editingMessageId);
+
+            if (response.data.aiMessage) {
+                setMessages((prev) =>
+                    prev.map((msg) =>
+                        msg._id === response.data.aiMessage._id
+                            ? response.data.aiMessage
+                            : msg
+                    )
+                );
+            }
+
+            if (response.data.fileTree) {
+                setFileTree((prev) =>
+                    mergeFileTrees(prev, response.data.fileTree)
+                );
+            }
+
+            setIsZenithThinking(false);
+        }
+        if (response.data.aiMessage) {
+            setMessages((prev) =>
+                prev.map((msg) =>
+                    msg._id === response.data.aiMessage._id
+                        ? response.data.aiMessage
+                        : msg
+                )
+            );
+        }
+
+        if (response.data.fileTree) {
+            setFileTree((prev) =>
+                mergeFileTrees(prev, response.data.fileTree)
+            );
+        }
+
+        setIsZenithThinking(false);
+
         setEditingMessageId(null);
         setEditedMessage("");
     };
@@ -367,6 +411,12 @@ const Project = () => {
                                                         : "text-gray-500"
                                                         }`}
                                                 >
+                                                    {msg.edited && (
+                                                        <span className="mr-1 text-[10px] opacity-70">
+                                                            Edited
+                                                        </span>
+                                                    )}
+
                                                     {new Date(msg.createdAt || msg.timestamp).toLocaleTimeString([], {
                                                         hour: "2-digit",
                                                         minute: "2-digit",

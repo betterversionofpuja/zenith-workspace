@@ -42,3 +42,7 @@ export const editMessage = (messageId, message) => {
     message,
   });
 };
+
+export const regenerateMessage = (messageId) => {
+  return axiosInstance.post(`/messages/regenerate/${messageId}`);
+};

@@ -101,13 +101,13 @@ io.on("connection", (socket) => {
         timestamp: userMessage.createdAt,
       });
 
-      // 2. If it's not for Zenith, stop here
-      if (!data.message.toLowerCase().startsWith("@zenith")) {
+      // 2. If the message doesn't mention Zenith, stop here
+      if (!data.message.toLowerCase().includes("@zenith")) {
         return;
       }
 
-      // 3. Remove the @zenith mention
-      const prompt = data.message.replace(/^@zenith\s*/i, "");
+      // 3. Remove every @zenith mention
+      const prompt = data.message.replace(/@zenith/gi, "").trim();
 
       // 4. Get Zenith's response
       io.to(socket.project._id.toString()).emit("zenith-thinking", {
@@ -129,14 +129,14 @@ io.on("connection", (socket) => {
       await socket.project.save();
 
       // 5. Save Zenith's response
-      const aiMessage = await Message.create({
-        project: socket.project._id,
-        sender: null,
-        email: "zenith@ai",
-        message: result.text,
-        isAI: true,
-      });
-
+const aiMessage = await Message.create({
+    project: socket.project._id,
+    sender: null,
+    email: "zenith@ai",
+    message: result.text,
+    isAI: true,
+    replyTo: userMessage._id,
+});
       // 6. Broadcast Zenith's response
       io.to(socket.project._id.toString()).emit("project-message", {
         ...aiMessage.toObject(),
