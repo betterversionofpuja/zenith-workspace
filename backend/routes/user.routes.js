@@ -23,6 +23,13 @@ router.get('/profile', authMiddleware.authUser, userController.profileController
 router.get('/logout', authMiddleware.authUser, userController.logoutController);
 
 
+router.put('/change-password',
+    authMiddleware.authUser,
+    body('currentPassword').isLength({ min: 3 }).withMessage('Current password must be at least 3 characters long'),
+    body('newPassword').isLength({ min: 3 }).withMessage('New password must be at least 3 characters long'),
+    userController.changePasswordController);
+
+
 router.get('/all', authMiddleware.authUser, userController.getAllUsersController);
 
 

@@ -3,11 +3,14 @@ import { HiOutlinePlus, HiOutlineX } from "react-icons/hi";
 import { useNavigate } from "react-router-dom";
 import axiosInstance from "../config/axios";
 import ProjectCard from "../components/ProjectCard";
+import FormMessage from "../components/FormMessage";
+import { HiOutlineUserCircle } from "react-icons/hi";
 
 const Home = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [projectName, setProjectName] = useState("");
   const [loading, setLoading] = useState(false);
+  const [createProjectError, setCreateProjectError] = useState("");
 
   const [projects, setProjects] = useState([]);
   const [fetchingProjects, setFetchingProjects] = useState(true);
@@ -33,14 +36,11 @@ const Home = () => {
   };
 
   const handleCreateProject = async () => {
-    if (!localStorage.getItem("token")) {
-      navigate("/register");
-      return;
-    }
 
     if (!projectName.trim()) return;
 
     setLoading(true);
+    setCreateProjectError("");
 
     try {
       await axiosInstance.post("/projects/create", {
@@ -50,14 +50,13 @@ const Home = () => {
       await fetchProjects();
 
       setProjectName("");
+      setCreateProjectError("");
       setIsModalOpen(false);
     } catch (error) {
-      console.log(error);
-
-      alert(
+      setCreateProjectError(
         error.response?.data?.message ||
-          error.response?.data?.errors?.[0]?.msg ||
-          "Failed to create project"
+        error.response?.data?.errors?.[0]?.msg ||
+        "Failed to create project"
       );
     } finally {
       setLoading(false);
@@ -70,6 +69,7 @@ const Home = () => {
       <div className="absolute bottom-[-180px] left-1/2 h-[420px] w-[700px] -translate-x-1/2 rounded-full bg-[#173D9D]/15 blur-[170px]" />
 
       <div className="relative mx-auto max-w-7xl">
+
         {/* Header */}
         <div className="mb-7 flex items-center justify-between">
           <div>
@@ -82,15 +82,33 @@ const Home = () => {
             </p>
           </div>
 
-          <button
-            onClick={() => setIsModalOpen(true)}
-            className="flex h-10 items-center gap-2 rounded-lg border border-[#173D9D]/20 bg-[#173D9D] px-4 text-sm font-medium text-white transition-colors duration-200 hover:bg-[#2148A8] active:bg-[#14357F]"
-          >
-            <HiOutlinePlus className="text-lg" />
-            New Project
-          </button>
-        </div>
+          <div className="flex items-center gap-3">
+            {localStorage.getItem("token") && (
+              <button
+                onClick={() => navigate("/profile")}
+                className="flex h-10 w-10 items-center justify-center rounded-lg border border-[rgba(255,255,255,0.08)] bg-[#181818] text-gray-400 transition hover:bg-[#202020] hover:text-white"
+              >
+                <HiOutlineUserCircle size={22} />
+              </button>
+            )}
 
+            <button
+              onClick={() => {
+                if (!localStorage.getItem("token")) {
+                  navigate("/register");
+                  return;
+                }
+
+                setCreateProjectError("");
+                setIsModalOpen(true);
+              }}
+              className="flex h-10 items-center gap-2 rounded-lg border border-[#173D9D]/20 bg-[#173D9D] px-4 text-sm font-medium text-white transition-colors duration-200 hover:bg-[#2148A8] active:bg-[#14357F]"
+            >
+              <HiOutlinePlus className="text-lg" />
+              New Project
+            </button>
+          </div>
+        </div>
         {/* Projects */}
         {fetchingProjects ? (
           <div className="py-20 text-center text-gray-500">
@@ -122,13 +140,19 @@ const Home = () => {
       {isModalOpen && (
         <>
           <div
-            onClick={() => setIsModalOpen(false)}
+            onClick={() => {
+              setCreateProjectError("");
+              setIsModalOpen(false);
+            }}
             className="fixed inset-0 bg-black/70 backdrop-blur-sm"
           />
 
           <div className="fixed left-1/2 top-1/2 z-50 w-[90%] max-w-md -translate-x-1/2 -translate-y-1/2 rounded-lg border border-[rgba(255,255,255,0.08)] bg-[#181818] p-6 shadow-2xl">
             <button
-              onClick={() => setIsModalOpen(false)}
+              onClick={() => {
+                setCreateProjectError("");
+                setIsModalOpen(false);
+              }}
               className="absolute right-5 top-5 text-gray-500 transition-colors duration-200 hover:text-gray-300"
             >
               <HiOutlineX size={20} />
@@ -146,9 +170,16 @@ const Home = () => {
               type="text"
               placeholder="e.g. AI Code Reviewer"
               value={projectName}
-              onChange={(e) => setProjectName(e.target.value)}
+              onChange={(e) => {
+                setCreateProjectError("");
+                setProjectName(e.target.value);
+              }}
               className="mt-6 h-11 w-full rounded-lg border border-[rgba(255,255,255,0.08)] bg-[#121212] px-4 text-white placeholder:text-gray-500 outline-none transition-colors duration-200 focus:border-[#173D9D] focus:ring-1 focus:ring-[#173D9D]/20"
             />
+
+            <div className="mt-4">
+              <FormMessage message={createProjectError} />
+            </div>
 
             <button
               onClick={handleCreateProject}

@@ -8,6 +8,7 @@ import {
 } from "react-icons/hi";
 import axiosInstance from "../config/axios";
 import { UserContext } from "../context/user.context";
+import FormMessage from "../components/FormMessage";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -15,6 +16,7 @@ const Login = () => {
 
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
   const [formData, setFormData] = useState({
     email: "",
@@ -22,6 +24,8 @@ const Login = () => {
   });
 
   const handleChange = (e) => {
+    setErrorMessage("");
+
     setFormData((prev) => ({
       ...prev,
       [e.target.name]: e.target.value,
@@ -33,6 +37,7 @@ const Login = () => {
 
     try {
       setLoading(true);
+      setErrorMessage("");
 
       const response = await axiosInstance.post(
         "/users/login",
@@ -48,14 +53,8 @@ const Login = () => {
       setUser(response.data.user);
 
       navigate("/");
-    } catch (error) {
-      console.error(error);
-
-      alert(
-        error.response?.data?.errors ||
-          error.response?.data?.message ||
-          "Login failed"
-      );
+    } catch {
+      setErrorMessage("Invalid email or password.");
     } finally {
       setLoading(false);
     }
@@ -73,6 +72,8 @@ const Login = () => {
         </h1>
 
         <form onSubmit={handleSubmit} className="space-y-5">
+          <FormMessage message={errorMessage} />
+
           {/* Email */}
           <div className="group relative">
             <HiOutlineMail className="absolute left-5 top-1/2 -translate-y-1/2 text-xl text-gray-500 transition-colors duration-200 group-focus-within:text-[#8FB4FF]" />
