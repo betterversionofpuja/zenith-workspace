@@ -270,7 +270,7 @@ const Project = () => {
     return (
         <main className="relative h-screen overflow-hidden bg-black">
             {/* Background Glow */}
-            <div className="absolute -left-40 bottom-[-180px] h-[500px] w-[500px] rounded-full bg-blue-700/20 blur-[180px]" />
+            <div className="absolute -left-40 bottom-[-180px] h-[500px] w-[500px] rounded-full bg-[#173D9D]/12 blur-[180px]" />
 
             <PanelGroup direction="horizontal" className="h-full">
 
@@ -280,16 +280,16 @@ const Project = () => {
                     <section className="relative flex h-full flex-col bg-[#121212]/95 backdrop-blur-xl">
                         {/* Header */}
 
-                        <div className="sticky top-0 z-20 flex items-center justify-between border-b border-white/10 bg-[#121212] px-5 py-3">
+                        <div className="sticky top-0 z-20 flex items-center justify-between border-b border-[rgba(255,255,255,0.08)] bg-[#121212] px-5 py-3">
 
                             <div className="flex items-center justify-between w-full">
 
                                 <div className="flex items-center gap-3">
                                     <button
                                         onClick={() => setIsSidebarOpen(true)}
-                                        className="flex h-10 w-10 items-center justify-center rounded-lg bg-[#1b1b1b] hover:bg-[#202020]"
+                                        className="flex h-10 w-10 items-center justify-center rounded-lg bg-[#181818] transition-colors duration-200 hover:bg-[#202020]"
                                     >
-                                        <HiOutlineUsers className="text-xl text-blue-400" />
+                                        <HiOutlineUsers className="text-xl text-gray-500" />
                                     </button>
 
                                     <div>
@@ -306,13 +306,13 @@ const Project = () => {
                                 <div className="relative">
                                     <button
                                         onClick={() => setShowProjectMenu((prev) => !prev)}
-                                        className="rounded-md p-2 text-gray-500 transition hover:bg-[#222] hover:text-white"
+                                        className="rounded-md p-2 text-gray-500 transition-colors duration-200 hover:bg-[#202020] hover:text-gray-300"
                                     >
                                         <HiOutlineDotsVertical className="text-lg" />
                                     </button>
 
                                     {showProjectMenu && (
-                                        <div className="absolute right-0 top-10 z-50 w-40 rounded-lg border border-white/10 bg-[#1b1b1b] py-1 shadow-xl">
+                                        <div className="absolute right-0 top-10 z-50 w-40 rounded-lg border border-[rgba(255,255,255,0.08)] bg-[#181818] py-1 shadow-xl">
                                             <button
                                                 onClick={async () => {
                                                     if (!window.confirm("Clear all chat messages?")) return;
@@ -322,7 +322,7 @@ const Project = () => {
                                                     setMessages([]);
                                                     setShowProjectMenu(false);
                                                 }}
-                                                className="w-full px-4 py-2 text-left text-sm text-red-400 hover:bg-[#2a2a2a]"
+                                                className="w-full px-4 py-2 text-left text-sm text-[#DC2626] transition-colors duration-200 hover:bg-[#202020]"
                                             >
                                                 Clear Chat
                                             </button>
@@ -368,13 +368,13 @@ const Project = () => {
                                         <div
                                             style={{ maxWidth: "75%" }}
                                             className={`relative inline-block min-w-[180px] max-w-fit rounded-lg border px-3 py-1 shadow-sm ${msg.sender === user._id
-                                                ? "border-blue-500/20 bg-[#1d4ed820] text-white"
-                                                : "border-white/10 bg-[#1a1c21] text-white"
+                                                ? "border-[#173D9D]/25 bg-[#173D9D]/15 text-white"
+                                                : "border-[rgba(255,255,255,0.08)] bg-[#181818] text-white"
                                                 }`}
                                         >
                                             <p
                                                 className={`mb-1 text-[11px] font-medium ${msg.sender === user._id
-                                                    ? "text-blue-300/80"
+                                                    ? "text-[#8FB4FF]"
                                                     : "text-gray-400"
                                                     }`}
                                             >
@@ -390,9 +390,9 @@ const Project = () => {
                                                         setEditedMessage(msg.message);
                                                         setShowEditModal(true);
                                                     }}
-                                                    className="absolute right-2 top-2 z-10 opacity-0 transition group-hover:opacity-100"
+                                                    className="absolute right-2 top-2 z-10 opacity-0 transition-opacity duration-200 group-hover:opacity-100"
                                                 >
-                                                    <HiOutlinePencil className="text-[11px] text-gray-500 hover:text-white" />
+                                                    <HiOutlinePencil className="text-[11px] text-gray-500 transition-colors duration-200 hover:text-gray-300" />
                                                 </button>
                                             )}
 
@@ -407,7 +407,7 @@ const Project = () => {
 
                                                 <span
                                                     className={`absolute bottom-0 right-0 text-[11px] ${msg.sender === user._id
-                                                        ? "text-blue-200/60"
+                                                        ? "text-[#8FB4FF]/70"
                                                         : "text-gray-500"
                                                         }`}
                                                 >
@@ -430,7 +430,7 @@ const Project = () => {
                             )}
                             {isZenithThinking && (
                                 <div className="mb-4 flex justify-start">
-                                    <div className="max-w-[75%] rounded-2xl bg-[#222] px-4 py-3 text-white">
+                                    <div className="max-w-[75%] rounded-lg border border-[rgba(255,255,255,0.08)] bg-[#181818] px-4 py-3 text-white">
                                         <p className="mb-1 text-xs font-semibold text-gray-400">
                                             zenith
                                         </p>
@@ -446,8 +446,8 @@ const Project = () => {
 
                         {/* Message Box */}
 
-                        <div className="bg-[#111111] p-3">
-                            <div className="flex items-end gap-1 rounded-lg border border-white/10 bg-[#16181d] px-3 py-2 transition-colors focus-within:border-blue-500/40">
+                        <div className="bg-[#121212] p-3">
+                            <div className="flex items-end gap-1 rounded-lg border border-[rgba(255,255,255,0.08)] bg-[#181818] px-3 py-2 transition-colors duration-200 focus-within:border-[#173D9D] focus-within:ring-1 focus-within:ring-[#173D9D]/20">
 
                                 <TextareaAutosize
                                     minRows={1}
@@ -466,7 +466,7 @@ const Project = () => {
 
                                 <button
                                     onClick={send}
-                                    className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md text-gray-400 transition hover:bg-white/5 hover:text-blue-400"
+                                    className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md text-gray-500 transition-colors duration-200 hover:bg-[#202020] hover:text-gray-300"
                                 >
                                     <HiOutlinePaperAirplane size={18} />
                                 </button>
@@ -477,7 +477,7 @@ const Project = () => {
                     </section>
                 </Panel>
                 <PanelResizeHandle
-                    className="w-px bg-white/10 hover:bg-blue-500/40 transition-colors"
+                    className="w-px bg-[rgba(255,255,255,0.08)] transition-colors duration-200 hover:bg-[#173D9D]/60"
                 />
 
                 {/* ================= RIGHT PANEL ================= */}
@@ -485,7 +485,7 @@ const Project = () => {
                 <Panel defaultSize={70}>
                     <section className="relative flex h-full overflow-hidden bg-black">
 
-                        <div className="absolute right-[-250px] top-[-150px] h-[450px] w-[450px] rounded-full bg-blue-700/10 blur-[180px]" />
+                        <div className="absolute right-[-250px] top-[-150px] h-[450px] w-[450px] rounded-full bg-[#173D9D]/10 blur-[180px]" />
 
                         <Workspace
                             projectId={projectId}
@@ -517,12 +517,12 @@ const Project = () => {
                 {/* ================= COLLABORATORS SIDEBAR ================= */}
 
                 <div
-                    className={`fixed left-0 top-0 z-50 h-screen w-[330px] border-r border-white/10 bg-[#121212] transition-transform duration-300 ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"
+                    className={`fixed left-0 top-0 z-50 h-screen w-[330px] border-r border-[rgba(255,255,255,0.08)] bg-[#121212] transition-transform duration-300 ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"
                         }`}
                 >
                     {/* Header */}
 
-                    <div className="border-b border-white/10 px-6 py-5">
+                    <div className="border-b border-[rgba(255,255,255,0.08)] px-6 py-5">
                         <div className="flex items-start justify-between">
                             <div>
                                 <h2 className="text-xl font-semibold text-white">
@@ -536,7 +536,7 @@ const Project = () => {
 
                             <button
                                 onClick={() => setIsSidebarOpen(false)}
-                                className="rounded-md p-2 text-gray-500 transition hover:bg-[#1e1e1e] hover:text-white"
+                                className="rounded-md p-2 text-gray-500 transition-colors duration-200 hover:bg-[#202020] hover:text-gray-300"
                             >
                                 <HiOutlineX size={20} />
                             </button>
@@ -552,9 +552,9 @@ const Project = () => {
                             return (
                                 <div
                                     key={user._id}
-                                    className="flex items-center gap-3 rounded-xl border border-white/5 bg-[#191919] p-3 transition hover:border-blue-500/20 hover:bg-[#202020]"
+                                    className="flex items-center gap-3 rounded-lg border border-[rgba(255,255,255,0.05)] bg-[#181818] p-3 transition-colors duration-200 hover:bg-[#202020]"
                                 >
-                                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-blue-600 font-semibold text-white">
+                                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-[#173D9D] font-semibold text-white">
                                         {username.charAt(0).toUpperCase()}
                                     </div>
 
@@ -567,7 +567,7 @@ const Project = () => {
                                             {user.email}
                                         </p>
 
-                                        <p className="mt-1 text-[11px] text-blue-400">
+                                        <p className="mt-1 text-[11px] text-[#8FB4FF]">
                                             {index === 0 ? "Owner" : "Collaborator"}
                                         </p>
                                     </div>
@@ -578,10 +578,10 @@ const Project = () => {
 
                     {/* Bottom Button */}
 
-                    <div className="absolute bottom-0 left-0 w-full border-t border-white/10 bg-[#121212] p-5">
+                    <div className="absolute bottom-0 left-0 w-full border-t border-[rgba(255,255,255,0.08)] bg-[#121212] p-5">
                         <button
                             onClick={() => setIsAddModalOpen(true)}
-                            className="flex w-full items-center justify-center gap-2 rounded-lg bg-blue-600 py-3 font-medium text-white transition hover:bg-blue-700"
+                            className="flex w-full items-center justify-center gap-2 rounded-lg bg-[#173D9D] py-3 font-medium text-white transition-colors duration-200 hover:bg-[#2148A8] active:bg-[#14357F]"
                         >
                             <span className="text-lg">+</span>
                             <span>Add Collaborator</span>
@@ -596,7 +596,7 @@ const Project = () => {
                             onClick={() => setIsAddModalOpen(false)}
                         />
 
-                        <div className="fixed left-1/2 top-1/2 z-[70] w-[420px] -translate-x-1/2 -translate-y-1/2 rounded-3xl border border-blue-500/20 bg-[#121212] p-6">
+                        <div className="fixed left-1/2 top-1/2 z-[70] w-[420px] -translate-x-1/2 -translate-y-1/2 rounded-lg border border-[rgba(255,255,255,0.08)] bg-[#181818] p-6 shadow-2xl">
 
                             <div className="mb-6 flex items-center justify-between">
                                 <h2 className="text-2xl font-semibold text-white">
@@ -605,7 +605,7 @@ const Project = () => {
 
                                 <button
                                     onClick={() => setIsAddModalOpen(false)}
-                                    className="text-gray-400 hover:text-white"
+                                    className="text-gray-500 transition-colors duration-200 hover:text-gray-300"
                                 >
                                     <HiOutlineX size={24} />
                                 </button>
@@ -616,12 +616,12 @@ const Project = () => {
                                 placeholder="Enter collaborator's email"
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
-                                className="w-full rounded-xl border border-gray-700 bg-[#1b1b1b] px-4 py-3 text-white outline-none focus:border-blue-500"
+                                className="w-full rounded-lg border border-[rgba(255,255,255,0.08)] bg-[#121212] px-4 py-3 text-white placeholder:text-gray-500 outline-none transition-colors duration-200 focus:border-[#173D9D] focus:ring-1 focus:ring-[#173D9D]/20"
                             />
 
                             <button
                                 onClick={addCollaborator}
-                                className="mt-6 w-full rounded-xl bg-blue-600 py-3 font-medium text-white transition hover:bg-blue-700"
+                                className="mt-6 w-full rounded-lg bg-[#173D9D] py-3 font-medium text-white transition-colors duration-200 hover:bg-[#2148A8] active:bg-[#14357F]"
                             >
                                 Add Collaborator
                             </button>
@@ -639,7 +639,7 @@ const Project = () => {
                     >
                         <div
                             onClick={(e) => e.stopPropagation()}
-                            className="w-[650px] rounded-2xl border border-white/10 bg-[#181818] p-6"
+                            className="w-[650px] rounded-lg border border-[rgba(255,255,255,0.08)] bg-[#181818] p-6 shadow-2xl"
                         >
                             <h2 className="mb-5 text-xl font-semibold text-white">
                                 Edit Message
@@ -650,20 +650,20 @@ const Project = () => {
                                 minRows={8}
                                 value={editedMessage}
                                 onChange={(e) => setEditedMessage(e.target.value)}
-                                className="w-full resize-none rounded-xl border border-white/10 bg-[#111] p-4 text-[15px] leading-7 text-white outline-none focus:border-blue-600/20"
+                                className="w-full resize-none rounded-lg border border-[rgba(255,255,255,0.08)] bg-[#121212] p-4 text-[15px] leading-7 text-white outline-none transition-colors duration-200 focus:border-[#173D9D] focus:ring-1 focus:ring-[#173D9D]/20"
                             />
 
                             <div className="mt-6 flex justify-end gap-3">
                                 <button
                                     onClick={() => setShowEditModal(false)}
-                                    className="rounded-lg bg-[#2b2b2b] px-5 py-2 text-white"
+                                    className="rounded-lg bg-[#202020] px-5 py-2 text-white transition-colors duration-200 hover:bg-[#181818]"
                                 >
                                     Cancel
                                 </button>
 
                                 <button
                                     onClick={handleSaveEdit}
-                                    className="rounded-lg bg-[#173d9d] px-5 py-2 text-white hover:bg-[#1c4ed8]"
+                                    className="rounded-lg bg-[#173D9D] px-5 py-2 text-white transition-colors duration-200 hover:bg-[#2148A8] active:bg-[#14357F]"
                                 >
                                     Save & Resend
                                 </button>

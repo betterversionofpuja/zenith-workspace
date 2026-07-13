@@ -64,10 +64,10 @@ const Register = () => {
   return (
     <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-black px-4">
       {/* Background Glow */}
-      <div className="absolute bottom-[-220px] left-1/2 h-[500px] w-[900px] -translate-x-1/2 rounded-full bg-blue-600/10 blur-[200px]" />
+      <div className="absolute bottom-[-220px] left-1/2 h-[500px] w-[900px] -translate-x-1/2 rounded-full bg-[#173D9D]/10 blur-[200px]" />
 
       {/* Card */}
-      <div className="relative w-full max-w-[430px] rounded-2xl border border-white/10 bg-[#121212]/95 px-8 py-8 shadow-xl backdrop-blur-xl">
+      <div className="relative w-full max-w-[430px] rounded-lg border border-[rgba(255,255,255,0.08)] bg-[#121212]/95 px-8 py-8 shadow-xl backdrop-blur-xl">
         <h1 className="mb-8 text-center text-4xl font-light tracking-tight text-white">
           Sign up
         </h1>
@@ -75,7 +75,7 @@ const Register = () => {
         <form onSubmit={handleSubmit} className="space-y-5">
           {/* Email */}
           <div className="relative group">
-            <HiOutlineMail className="absolute left-5 top-1/2 -translate-y-1/2 text-xl text-gray-500 transition group-focus-within:text-blue-400" />
+            <HiOutlineMail className="absolute left-5 top-1/2 -translate-y-1/2 text-xl text-gray-500 transition-colors duration-200 group-focus-within:text-[#8FB4FF]" />
 
             <input
               type="email"
@@ -84,13 +84,13 @@ const Register = () => {
               value={formData.email}
               onChange={handleChange}
               required
-              className="h-12 w-full rounded-full border border-white/10 bg-[#181818] pl-14 pr-5 text-sm text-white placeholder:text-gray-500 outline-none transition-all duration-200 focus:border-blue-500/70"
+              className="h-12 w-full rounded-lg border border-[rgba(255,255,255,0.08)] bg-[#181818] pl-14 pr-5 text-sm text-white placeholder:text-gray-500 outline-none transition-colors duration-200 focus:border-[#173D9D] focus:ring-1 focus:ring-[#173D9D]/20"
             />
           </div>
 
           {/* Password */}
           <div className="relative group">
-            <HiOutlineLockClosed className="absolute left-5 top-1/2 -translate-y-1/2 text-xl text-gray-500 transition group-focus-within:text-blue-400" />
+            <HiOutlineLockClosed className="absolute left-5 top-1/2 -translate-y-1/2 text-xl text-gray-500 transition-colors duration-200 group-focus-within:text-[#8FB4FF]" />
 
             <input
               type={showPassword ? "text" : "password"}
@@ -99,13 +99,13 @@ const Register = () => {
               value={formData.password}
               onChange={handleChange}
               required
-              className="h-12 w-full rounded-full border border-white/10 bg-[#181818] pl-14 pr-14 text-sm text-white placeholder:text-gray-500 outline-none transition-all duration-200 focus:border-blue-500/70"
+              className="h-12 w-full rounded-lg border border-[rgba(255,255,255,0.08)] bg-[#181818] pl-14 pr-14 text-sm text-white placeholder:text-gray-500 outline-none transition-colors duration-200 focus:border-[#173D9D] focus:ring-1 focus:ring-[#173D9D]/20"
             />
 
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
-              className="absolute right-5 top-1/2 -translate-y-1/2 text-xl text-gray-500 transition hover:text-blue-400"
+              className="absolute right-5 top-1/2 -translate-y-1/2 text-xl text-gray-500 transition-colors duration-200 hover:text-gray-300"
             >
               {showPassword ? (
                 <HiOutlineEyeOff />
@@ -119,7 +119,7 @@ const Register = () => {
           <button
             type="submit"
             disabled={loading}
-            className="mt-2 h-11 w-full rounded-full bg-[#2563eb] text-base font-medium text-white transition hover:bg-[#3b82f6] disabled:cursor-not-allowed disabled:opacity-60"
+            className="mt-2 h-11 w-full rounded-lg bg-[#173D9D] text-base font-medium text-white transition-colors duration-200 hover:bg-[#2148A8] active:bg-[#14357F] disabled:cursor-not-allowed disabled:opacity-60"
           >
             {loading ? "Creating Account..." : "Create Account"}
           </button>
@@ -129,7 +129,7 @@ const Register = () => {
             Already have an account?{" "}
             <Link
               to="/login"
-              className="font-medium text-blue-400 transition hover:text-blue-300"
+              className="font-medium text-gray-300 transition-colors duration-200 hover:text-white"
             >
               Log in
             </Link>

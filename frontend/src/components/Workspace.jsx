@@ -102,11 +102,11 @@ const Workspace = ({
       inherit: true,
       rules: [],
       colors: {
-        "editor.background": "#0b0b0d",
-        "editor.lineHighlightBackground": "#16181d",
-        "editorCursor.foreground": "#3b82f6",
-        "editor.selectionBackground": "#1d4ed855",
-        "editor.inactiveSelectionBackground": "#1d4ed833",
+        "editor.background": "#000000",
+        "editor.lineHighlightBackground": "#181818",
+        "editorCursor.foreground": "#8FB4FF",
+        "editor.selectionBackground": "#173D9D55",
+        "editor.inactiveSelectionBackground": "#173D9D33",
       },
     });
   }, [monaco]);
@@ -257,8 +257,8 @@ const Workspace = ({
                   type: "file",
                 });
               }}
-              className="ml-5 flex cursor-pointer items-center gap-2 rounded px-2 py-1 text-gray-300 hover:bg-white/5"
-            >              <FileCode2 size={15} className="text-gray-400" />
+              className="ml-5 flex cursor-pointer items-center gap-2 rounded-md px-2 py-1 text-gray-300 transition-colors duration-200 hover:bg-[#202020]"
+            >              <FileCode2 size={15} className="text-gray-500" />
               <span>{name}</span>
             </div>
           );
@@ -285,7 +285,7 @@ const Workspace = ({
                   type: "folder",
                 });
               }}
-              className="flex cursor-pointer items-center gap-1 rounded px-2 py-1 text-white hover:bg-white/5"
+              className="flex cursor-pointer items-center gap-1 rounded-md px-2 py-1 text-white transition-colors duration-200 hover:bg-[#202020]"
             >
               {expanded ? (
                 <ChevronDown size={14} />
@@ -294,16 +294,16 @@ const Workspace = ({
               )}
 
               {expanded ? (
-                <FolderOpen size={16} className="text-blue-400" />
+                <FolderOpen size={16} className="text-gray-500" />
               ) : (
-                <Folder size={16} className="text-blue-400" />
+                <Folder size={16} className="text-gray-500" />
               )}
 
               <span>{name}</span>
             </div>
 
             {expanded && (
-              <div className="ml-4 border-l border-white/10 pl-2">
+              <div className="ml-4 border-l border-[rgba(255,255,255,0.08)] pl-2">
                 {renderTree(value, currentPath)}
               </div>
             )}
@@ -321,12 +321,12 @@ const Workspace = ({
   return (
     <PanelGroup
       direction="horizontal"
-      className="h-full w-full bg-[#0b0b0d]"
+      className="h-full w-full bg-black"
     >
       {/* Explorer */}
       <Panel defaultSize={25} minSize={15} maxSize={40}>
-        <aside className="h-full overflow-auto border-r border-white/10 bg-[#0f0f10]">
-          <div className="flex items-center justify-between border-b border-white/10 px-4 py-3">
+        <aside className="h-full overflow-auto border-r border-[rgba(255,255,255,0.08)] bg-[#121212]">
+          <div className="flex items-center justify-between border-b border-[rgba(255,255,255,0.08)] px-4 py-3">
             <span className="text-xs font-semibold uppercase tracking-[0.2em] text-gray-400">
               Explorer
             </span>
@@ -336,13 +336,13 @@ const Workspace = ({
 
               <FilePlus2
                 size={16}
-                className="cursor-pointer hover:text-white"
+                className="cursor-pointer transition-colors duration-200 hover:text-gray-300"
                 onClick={() => setShowCreateFile(true)}
               />
 
               <FolderPlus
                 size={16}
-                className="cursor-pointer hover:text-white"
+                className="cursor-pointer transition-colors duration-200 hover:text-gray-300"
                 onClick={() => setShowCreateFolder(true)}
               />
 
@@ -354,7 +354,7 @@ const Workspace = ({
 
             <div
               onClick={() => toggleFolder("project")}
-              className="flex cursor-pointer items-center gap-1 rounded px-2 py-1 text-white hover:bg-white/5"
+              className="flex cursor-pointer items-center gap-1 rounded-md px-2 py-1 text-white transition-colors duration-200 hover:bg-[#202020]"
             >
               {expandedFolders.project ? (
                 <ChevronDown size={14} />
@@ -363,9 +363,9 @@ const Workspace = ({
               )}
 
               {expandedFolders.project ? (
-                <FolderOpen size={17} className="text-blue-400" />
+                <FolderOpen size={17} className="text-gray-500" />
               ) : (
-                <Folder size={17} className="text-blue-400" />
+                <Folder size={17} className="text-gray-500" />
               )}
 
               <span className="font-medium">
@@ -374,26 +374,26 @@ const Workspace = ({
             </div>
 
             {expandedFolders.project && (
-              <div className="ml-4 border-l border-white/10 pl-3">
+              <div className="ml-4 border-l border-[rgba(255,255,255,0.08)] pl-3">
                 {renderTree(fileTree)}
               </div>
             )}
           </div>
         </aside>
       </Panel>
-      <PanelResizeHandle className="w-px bg-white/5 hover:bg-blue-500/40 transition-colors duration-150" />
+      <PanelResizeHandle className="w-px bg-[rgba(255,255,255,0.05)] transition-colors duration-200 hover:bg-[#173D9D]/60" />
 
       {/* Editor */}
       <Panel defaultSize={75}>
         <section className="flex h-full flex-col">
-          <div className="flex h-11 overflow-x-auto whitespace-nowrap bg-[#16181d]">
+          <div className="flex h-11 overflow-x-auto whitespace-nowrap bg-[#121212]">
             {openFiles.map((file) => (
               <button
                 key={file.name}
                 onClick={() => setActiveFile(file)}
-                className={`flex shrink-0 items-center gap-2 px-4 text-sm ${activeFile?.name === file.name
-                  ? "bg-[#0b0b0d] text-white"
-                  : "text-gray-400 hover:bg-white/5"
+                  className={`flex shrink-0 items-center gap-2 px-4 text-sm ${activeFile?.name === file.name
+                  ? "bg-black text-white"
+                  : "text-gray-400 transition-colors duration-200 hover:bg-[#202020]"
                   }`}
               >
                 <span>{file.name}</span>
@@ -466,7 +466,7 @@ const Workspace = ({
 
       {contextMenu.visible && (
         <div
-          className="fixed z-50 w-48 rounded-md border border-white/10 bg-[#1b1b1d] py-1 shadow-xl"
+          className="fixed z-50 w-48 rounded-lg border border-[rgba(255,255,255,0.08)] bg-[#181818] py-1 shadow-xl"
           style={{
             left: contextMenu.x,
             top: contextMenu.y,
@@ -479,7 +479,7 @@ const Workspace = ({
                   setShowCreateFile(true);
                   setContextMenu((prev) => ({ ...prev, visible: false }));
                 }}
-                className="block w-full px-4 py-2 text-left text-sm text-white hover:bg-white/10"
+                className="block w-full px-4 py-2 text-left text-sm text-gray-300 transition-colors duration-200 hover:bg-[#202020] hover:text-white"
               >
                 New File
               </button>
@@ -489,12 +489,12 @@ const Workspace = ({
                   setShowCreateFolder(true);
                   setContextMenu((prev) => ({ ...prev, visible: false }));
                 }}
-                className="block w-full px-4 py-2 text-left text-sm text-white hover:bg-white/10"
+                className="block w-full px-4 py-2 text-left text-sm text-gray-300 transition-colors duration-200 hover:bg-[#202020] hover:text-white"
               >
                 New Folder
               </button>
 
-              <div className="my-1 border-t border-white/10" />
+              <div className="my-1 border-t border-[rgba(255,255,255,0.08)]" />
             </>
           )}
 
@@ -507,14 +507,14 @@ const Workspace = ({
                 visible: false,
               }));
             }}
-            className="block w-full px-4 py-2 text-left text-sm text-white hover:bg-white/10"
+            className="block w-full px-4 py-2 text-left text-sm text-gray-300 transition-colors duration-200 hover:bg-[#202020] hover:text-white"
           >
             Rename
           </button>
 
           <button
             onClick={deleteItem}
-            className="block w-full px-4 py-2 text-left text-sm text-red-400 hover:bg-red-500/20"
+            className="block w-full px-4 py-2 text-left text-sm text-[#DC2626] transition-colors duration-200 hover:bg-[#202020]"
           >
             Delete
           </button>
@@ -522,8 +522,8 @@ const Workspace = ({
       )}
 
       {showCreateFile && (
-        <div className="absolute inset-0 z-50 flex items-center justify-center bg-black/50">
-          <div className="w-80 rounded-lg bg-[#1b1b1d] p-5 shadow-xl">
+        <div className="absolute inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm">
+          <div className="w-80 rounded-lg border border-[rgba(255,255,255,0.08)] bg-[#181818] p-5 shadow-xl">
             <h2 className="mb-4 text-lg font-semibold text-white">
               Create New File
             </h2>
@@ -532,7 +532,7 @@ const Workspace = ({
               value={newFileName}
               onChange={(e) => setNewFileName(e.target.value)}
               placeholder="e.g. app.js"
-              className="w-full rounded border border-white/10 bg-[#111] px-3 py-2 text-white outline-none"
+              className="w-full rounded-lg border border-[rgba(255,255,255,0.08)] bg-[#121212] px-3 py-2 text-white placeholder:text-gray-500 outline-none transition-colors duration-200 focus:border-[#173D9D] focus:ring-1 focus:ring-[#173D9D]/20"
             />
 
             <div className="mt-5 flex justify-end gap-2">
@@ -541,14 +541,14 @@ const Workspace = ({
                   setShowCreateFile(false);
                   setNewFileName("");
                 }}
-                className="rounded bg-gray-700 px-3 py-2 text-white"
+                className="rounded-lg bg-[#202020] px-3 py-2 text-white transition-colors duration-200 hover:bg-[#181818]"
               >
                 Cancel
               </button>
 
               <button
                 onClick={createFile}
-                className="rounded bg-blue-600 px-3 py-2 text-white"
+                className="rounded-lg bg-[#173D9D] px-3 py-2 text-white transition-colors duration-200 hover:bg-[#2148A8] active:bg-[#14357F]"
               >
                 Create
               </button>
@@ -558,8 +558,8 @@ const Workspace = ({
       )}
 
       {showCreateFolder && (
-        <div className="absolute inset-0 z-50 flex items-center justify-center bg-black/50">
-          <div className="w-80 rounded-lg bg-[#1b1b1d] p-5 shadow-xl">
+        <div className="absolute inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm">
+          <div className="w-80 rounded-lg border border-[rgba(255,255,255,0.08)] bg-[#181818] p-5 shadow-xl">
             <h2 className="mb-4 text-lg font-semibold text-white">
               Create New Folder
             </h2>
@@ -568,7 +568,7 @@ const Workspace = ({
               value={newFolderName}
               onChange={(e) => setNewFolderName(e.target.value)}
               placeholder="e.g. components"
-              className="w-full rounded border border-white/10 bg-[#111] px-3 py-2 text-white outline-none"
+              className="w-full rounded-lg border border-[rgba(255,255,255,0.08)] bg-[#121212] px-3 py-2 text-white placeholder:text-gray-500 outline-none transition-colors duration-200 focus:border-[#173D9D] focus:ring-1 focus:ring-[#173D9D]/20"
             />
 
             <div className="mt-5 flex justify-end gap-2">
@@ -577,14 +577,14 @@ const Workspace = ({
                   setShowCreateFolder(false);
                   setNewFolderName("");
                 }}
-                className="rounded bg-gray-700 px-3 py-2 text-white"
+                className="rounded-lg bg-[#202020] px-3 py-2 text-white transition-colors duration-200 hover:bg-[#181818]"
               >
                 Cancel
               </button>
 
               <button
                 onClick={createFolder}
-                className="rounded bg-blue-600 px-3 py-2 text-white"
+                className="rounded-lg bg-[#173D9D] px-3 py-2 text-white transition-colors duration-200 hover:bg-[#2148A8] active:bg-[#14357F]"
               >
                 Create
               </button>
@@ -594,8 +594,8 @@ const Workspace = ({
       )}
 
       {showRenameModal && (
-        <div className="absolute inset-0 z-50 flex items-center justify-center bg-black/50">
-          <div className="w-80 rounded-lg bg-[#1b1b1d] p-5 shadow-xl">
+        <div className="absolute inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm">
+          <div className="w-80 rounded-lg border border-[rgba(255,255,255,0.08)] bg-[#181818] p-5 shadow-xl">
             <h2 className="mb-4 text-lg font-semibold text-white">
               Rename
             </h2>
@@ -603,7 +603,7 @@ const Workspace = ({
             <input
               value={renameValue}
               onChange={(e) => setRenameValue(e.target.value)}
-              className="w-full rounded border border-white/10 bg-[#111] px-3 py-2 text-white outline-none"
+              className="w-full rounded-lg border border-[rgba(255,255,255,0.08)] bg-[#121212] px-3 py-2 text-white outline-none transition-colors duration-200 focus:border-[#173D9D] focus:ring-1 focus:ring-[#173D9D]/20"
             />
 
             <div className="mt-5 flex justify-end gap-2">
@@ -612,14 +612,14 @@ const Workspace = ({
                   setShowRenameModal(false);
                   setRenameValue("");
                 }}
-                className="rounded bg-gray-700 px-3 py-2 text-white"
+                className="rounded-lg bg-[#202020] px-3 py-2 text-white transition-colors duration-200 hover:bg-[#181818]"
               >
                 Cancel
               </button>
 
               <button
                 onClick={renameItem}
-                className="rounded bg-blue-600 px-3 py-2 text-white"
+                className="rounded-lg bg-[#173D9D] px-3 py-2 text-white transition-colors duration-200 hover:bg-[#2148A8] active:bg-[#14357F]"
               >
                 Rename
               </button>

@@ -84,7 +84,7 @@ const Home = () => {
 
           <button
             onClick={() => setIsModalOpen(true)}
-            className="flex h-10 items-center gap-2 rounded-lg border border-[#173D9D]/20 bg-[#173D9D] px-4 text-sm font-medium text-white transition hover:bg-[#1E4AB8]"
+            className="flex h-10 items-center gap-2 rounded-lg border border-[#173D9D]/20 bg-[#173D9D] px-4 text-sm font-medium text-white transition-colors duration-200 hover:bg-[#2148A8] active:bg-[#14357F]"
           >
             <HiOutlinePlus className="text-lg" />
             New Project
@@ -97,7 +97,7 @@ const Home = () => {
             Loading projects...
           </div>
         ) : projects.length === 0 ? (
-          <div className="rounded-xl border border-dashed border-white/10 bg-[#111111] py-20 text-center">
+          <div className="rounded-lg border border-dashed border-[rgba(255,255,255,0.08)] bg-[#121212] py-20 text-center">
             <p className="text-lg text-gray-300">
               No projects
             </p>
@@ -126,10 +126,10 @@ const Home = () => {
             className="fixed inset-0 bg-black/70 backdrop-blur-sm"
           />
 
-          <div className="fixed left-1/2 top-1/2 z-50 w-[90%] max-w-md -translate-x-1/2 -translate-y-1/2 rounded-xl border border-white/10 bg-[#151515] p-6 shadow-2xl">
+          <div className="fixed left-1/2 top-1/2 z-50 w-[90%] max-w-md -translate-x-1/2 -translate-y-1/2 rounded-lg border border-[rgba(255,255,255,0.08)] bg-[#181818] p-6 shadow-2xl">
             <button
               onClick={() => setIsModalOpen(false)}
-              className="absolute right-5 top-5 text-gray-500 transition hover:text-white"
+              className="absolute right-5 top-5 text-gray-500 transition-colors duration-200 hover:text-gray-300"
             >
               <HiOutlineX size={20} />
             </button>
@@ -147,13 +147,13 @@ const Home = () => {
               placeholder="e.g. AI Code Reviewer"
               value={projectName}
               onChange={(e) => setProjectName(e.target.value)}
-              className="mt-6 h-11 w-full rounded-lg border border-white/10 bg-[#1b1b1d] px-4 text-white outline-none transition focus:border-[#173D9D]"
+              className="mt-6 h-11 w-full rounded-lg border border-[rgba(255,255,255,0.08)] bg-[#121212] px-4 text-white placeholder:text-gray-500 outline-none transition-colors duration-200 focus:border-[#173D9D] focus:ring-1 focus:ring-[#173D9D]/20"
             />
 
             <button
               onClick={handleCreateProject}
               disabled={loading}
-              className="mt-6 h-11 w-full rounded-lg bg-[#173D9D] text-sm font-medium text-white transition hover:bg-[#1E4AB8] disabled:cursor-not-allowed disabled:opacity-60"
+              className="mt-6 h-11 w-full rounded-lg bg-[#173D9D] text-sm font-medium text-white transition-colors duration-200 hover:bg-[#2148A8] active:bg-[#14357F] disabled:cursor-not-allowed disabled:opacity-60"
             >
               {loading ? "Creating..." : "Create Project"}
             </button>

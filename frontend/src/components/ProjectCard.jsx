@@ -14,7 +14,7 @@ const ProjectCard = ({ project }) => {
 
   return (
     <div
-      className="group relative cursor-pointer rounded-xl border border-white/10 bg-[#141414] p-5 transition-all duration-200 hover:border-blue-500/40 hover:bg-[#181818]"
+      className="group relative cursor-pointer rounded-lg border border-[rgba(255,255,255,0.08)] bg-[#121212] p-5 transition-colors duration-200 hover:border-[rgba(255,255,255,0.08)] hover:bg-[#181818]"
       onClick={() => navigate(`/project/${project._id}`)}
     >
       <div className="flex items-start justify-between gap-2">
@@ -27,7 +27,7 @@ const ProjectCard = ({ project }) => {
             e.stopPropagation();
             setShowMenu((prev) => !prev);
           }}
-          className="flex-shrink-0 rounded-md p-1 text-gray-500 opacity-0 transition-all duration-200 hover:bg-[#222] hover:text-white group-hover:opacity-100"
+          className="flex-shrink-0 rounded-md p-1 text-gray-500 opacity-0 transition-colors duration-200 hover:bg-[#202020] hover:text-gray-300 group-hover:opacity-100"
         >
           <HiOutlineDotsVertical className="text-lg" />
         </button>
@@ -35,7 +35,7 @@ const ProjectCard = ({ project }) => {
         {showMenu && (
           <div
             onClick={(e) => e.stopPropagation()}
-            className="absolute right-4 top-12 z-20 w-36 rounded-lg border border-white/10 bg-[#1b1b1b] py-1 shadow-xl"
+            className="absolute right-4 top-12 z-20 w-36 rounded-lg border border-[rgba(255,255,255,0.08)] bg-[#181818] py-1 shadow-xl"
           >
             <button
               onClick={(e) => {
@@ -43,7 +43,7 @@ const ProjectCard = ({ project }) => {
                 setShowMenu(false);
                 setShowRename(true);
               }}
-              className="w-full px-4 py-2 text-left text-sm text-gray-300 hover:bg-[#2a2a2a]"
+              className="w-full px-4 py-2 text-left text-sm text-gray-300 transition-colors duration-200 hover:bg-[#202020] hover:text-white"
             >
               Rename
             </button>
@@ -59,7 +59,7 @@ const ProjectCard = ({ project }) => {
 
                 window.location.reload();
               }}
-              className="w-full px-4 py-2 text-left text-sm text-red-400 hover:bg-[#2a2a2a]"
+              className="w-full px-4 py-2 text-left text-sm text-[#DC2626] transition-colors duration-200 hover:bg-[#202020]"
             >
               Delete
             </button>
@@ -69,7 +69,7 @@ const ProjectCard = ({ project }) => {
       </div>
 
       <div className="mt-4 flex items-center gap-2 text-sm text-gray-400">
-        <HiOutlineUserGroup className="text-base" />
+        <HiOutlineUserGroup className="text-base text-gray-500" />
 
         <span>
           {project.users.length}{" "}
@@ -85,11 +85,11 @@ const ProjectCard = ({ project }) => {
             e.stopPropagation();
             setShowRename(false);
           }}
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/60"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm"
         >
           <div
             onClick={(e) => e.stopPropagation()}
-            className="w-80 rounded-xl border border-white/10 bg-[#1b1b1b] p-5 shadow-xl"
+            className="w-80 rounded-lg border border-[rgba(255,255,255,0.08)] bg-[#181818] p-5 shadow-xl"
           >
             <h2 className="mb-4 text-lg font-semibold text-white">
               Rename Project
@@ -98,13 +98,13 @@ const ProjectCard = ({ project }) => {
             <input
               value={newName}
               onChange={(e) => setNewName(e.target.value)}
-              className="w-full rounded-lg border border-white/10 bg-[#111] px-3 py-2 text-white outline-none focus:border-blue-500"
+              className="w-full rounded-lg border border-[rgba(255,255,255,0.08)] bg-[#121212] px-3 py-2 text-white outline-none transition-colors duration-200 focus:border-[#173D9D] focus:ring-1 focus:ring-[#173D9D]/20"
             />
 
             <div className="mt-5 flex justify-end gap-2">
               <button
                 onClick={() => setShowRename(false)}
-                className="rounded-lg bg-[#2a2a2a] px-4 py-2 text-white"
+                className="rounded-lg bg-[#202020] px-4 py-2 text-white transition-colors duration-200 hover:bg-[#181818]"
               >
                 Cancel
               </button>
@@ -116,7 +116,7 @@ const ProjectCard = ({ project }) => {
                   setShowRename(false);
                   window.location.reload();
                 }}
-                className="rounded-lg bg-blue-600 px-4 py-2 text-white hover:bg-blue-500"
+                className="rounded-lg bg-[#173D9D] px-4 py-2 text-white transition-colors duration-200 hover:bg-[#2148A8] active:bg-[#14357F]"
               >
                 Save
               </button>
