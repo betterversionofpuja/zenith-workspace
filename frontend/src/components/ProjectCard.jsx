@@ -11,6 +11,7 @@ const ProjectCard = ({ project }) => {
   const [showMenu, setShowMenu] = useState(false);
   const [showRename, setShowRename] = useState(false);
   const [newName, setNewName] = useState(project.name);
+  const [showDelete, setShowDelete] = useState(false);
 
   return (
     <div
@@ -53,11 +54,7 @@ const ProjectCard = ({ project }) => {
                 e.stopPropagation();
                 setShowMenu(false);
 
-                if (!window.confirm("Delete this project?")) return;
-
-                await deleteProject(project._id);
-
-                window.location.reload();
+                setShowDelete(true);
               }}
               className="w-full px-4 py-2 text-left text-sm text-[#DC2626] transition-colors duration-200 hover:bg-[#202020]"
             >
@@ -124,6 +121,48 @@ const ProjectCard = ({ project }) => {
           </div>
         </div>
       )}
+
+      {showDelete && (
+  <div
+    onClick={(e) => {
+      e.stopPropagation();
+      setShowDelete(false);
+    }}
+    className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm"
+  >
+    <div
+      onClick={(e) => e.stopPropagation()}
+      className="w-80 rounded-lg border border-white/10 bg-[#181818] p-5"
+    >
+      <h2 className="text-base font-semibold text-white">
+        Delete Project
+      </h2>
+
+      <p className="mt-2 text-sm text-gray-400">
+        Delete <span className="text-white">"{project.name}"</span>?
+      </p>
+
+      <div className="mt-5 flex justify-end gap-2">
+        <button
+          onClick={() => setShowDelete(false)}
+          className="rounded-md bg-[#202020] px-4 py-2 text-sm text-white hover:bg-[#2A2A2A]"
+        >
+          Cancel
+        </button>
+
+        <button
+          onClick={async () => {
+            await deleteProject(project._id);
+            window.location.reload();
+          }}
+          className="rounded-md bg-[#DC2626] px-4 py-2 text-sm text-white hover:bg-[#B91C1C]"
+        >
+          Delete
+        </button>
+      </div>
+    </div>
+  </div>
+)}
     </div>
   );
 };
