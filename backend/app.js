@@ -28,8 +28,11 @@ app.use("/projects", projectRoutes);
 app.use("/messages", messageRoutes);
 app.use("/ai", aiRouter);
 
-app.get("/", (req, res) => {
-    res.send("Hello, Express!");
+app.get("/health", (req, res) => {
+  res.status(200).json({
+    status: "Zenith is alive",
+    uptime: process.uptime(),
+  });
 });
 
 export default app;
