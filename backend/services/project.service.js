@@ -89,7 +89,7 @@ export const addUsersToProject = async ({ projectId, users, userId }) => {
             }
         }
     }, {
-        new: true
+        returnDocument: "after"
     })
 
     return updatedProject

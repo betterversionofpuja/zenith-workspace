@@ -2,93 +2,95 @@ import projectModel from '../models/project.model.js';
 import * as projectService from '../services/project.service.js';
 import { validationResult } from 'express-validator';
 import userModel from '../models/user.model.js';
+import { indexChangedFiles } from "../services/file.service.js";
+
 
 export const createProject = async (req, res) => {
-    const errors = validationResult(req);
+  const errors = validationResult(req);
 
-    if (!errors.isEmpty()) {
-        return res.status(400).json({ errors: errors.array() });
-    }
-    try {
-        const { name } = req.body;
-        const loggedInUser = await userModel.findOne({ email: req.user.email });
-        const userId = loggedInUser._id;
-        const newProject = await projectService.createProject({ name, userId });
-         res.status(201).json(newProject);
-    } catch (error) {
-        console.log(error);
-        res.status(400).send({ message: error.message });
-    }
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+  try {
+    const { name } = req.body;
+    const loggedInUser = await userModel.findOne({ email: req.user.email });
+    const userId = loggedInUser._id;
+    const newProject = await projectService.createProject({ name, userId });
+    res.status(201).json(newProject);
+  } catch (error) {
+    console.log(error);
+    res.status(400).send({ message: error.message });
+  }
 }
 
 export const getAllProject = async (req, res) => {
 
-    try{
-        const loggedInUser = await userModel.findOne({ email: req.user.email });
-        const allUserProjects = await projectService.getAllProjectByUserId({ userId: loggedInUser._id });
+  try {
+    const loggedInUser = await userModel.findOne({ email: req.user.email });
+    const allUserProjects = await projectService.getAllProjectByUserId({ userId: loggedInUser._id });
 
-        return res
-        .status(200)
-        .json({
-            projects: allUserProjects
-        });
+    return res
+      .status(200)
+      .json({
+        projects: allUserProjects
+      });
 
-    }catch(error){
-        console.log(error);
-        res.status(400).send({ message: error.message });
-    }
+  } catch (error) {
+    console.log(error);
+    res.status(400).send({ message: error.message });
+  }
 }
 
 export const addUserToProject = async (req, res) => {
-    const errors = validationResult(req);
+  const errors = validationResult(req);
 
-    if (!errors.isEmpty()) {
-        return res.status(400).json({ errors: errors.array() });
-    }
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
 
-    try {
+  try {
 
-        const { projectId, users } = req.body
+    const { projectId, users } = req.body
 
-        const loggedInUser = await userModel.findOne({
-            email: req.user.email
-        })
+    const loggedInUser = await userModel.findOne({
+      email: req.user.email
+    })
 
 
-        const project = await projectService.addUsersToProject({
-            projectId,
-            users,
-            userId: loggedInUser._id
-        })
+    const project = await projectService.addUsersToProject({
+      projectId,
+      users,
+      userId: loggedInUser._id
+    })
 
-        return res.status(200).json({
-            project,
-        })
+    return res.status(200).json({
+      project,
+    })
 
-    } catch (err) {
-        console.log(err)
-        res.status(400).json({ error: err.message })
-    }
+  } catch (err) {
+    console.log(err)
+    res.status(400).json({ error: err.message })
+  }
 
 
 }
 
 export const getProjectById = async (req, res) => {
 
-    const { projectId } = req.params;
+  const { projectId } = req.params;
 
-    try {
+  try {
 
-        const project = await projectService.getProjectById({ projectId });
+    const project = await projectService.getProjectById({ projectId });
 
-        return res.status(200).json({
-            project
-        })
+    return res.status(200).json({
+      project
+    })
 
-    } catch (err) {
-        console.log(err)
-        res.status(400).json({ error: err.message })
-    }
+  } catch (err) {
+    console.log(err)
+    res.status(400).json({ error: err.message })
+  }
 
 }
 
@@ -100,12 +102,15 @@ export const updateFileTree = async (req, res) => {
     const project = await projectModel.findByIdAndUpdate(
       projectId,
       { fileTree },
-      { new: true }
+      { returnDocument: "after" }
     );
+
+    await indexChangedFiles(project, fileTree);
 
     return res.status(200).json({
       project,
     });
+
   } catch (error) {
     console.error(error);
     return res.status(500).json({
@@ -189,7 +194,7 @@ export const renameProject = async (req, res) => {
     const project = await projectModel.findByIdAndUpdate(
       projectId,
       { name },
-      { new: true }
+      { returnDocument: "after" }
     );
 
     return res.status(200).json(project);

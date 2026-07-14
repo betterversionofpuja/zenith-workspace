@@ -1,14 +1,14 @@
 import { GoogleGenAI } from "@google/genai";
 import systemInstruction from "../config/systemInstruction.js";
 
-const ai = new GoogleGenAI({
+export const ai = new GoogleGenAI({
   apiKey: process.env.GEMINI_API_KEY,
 });
 
 export const generateResult = async ({
   prompt,
   projectName,
-  fileTree,
+  contextFiles,
 }) => {
   const response = await ai.models.generateContent({
     model: "gemini-2.5-flash",
@@ -19,7 +19,15 @@ Current Project:
 ${projectName}
 
 Current Workspace:
-${JSON.stringify(fileTree, null, 2)}
+${contextFiles
+  .map(
+    (file) => `
+File: ${file.path}
+
+${file.content}
+`
+  )
+  .join("\n\n")}
 
 User:
 ${prompt}

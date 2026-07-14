@@ -52,7 +52,7 @@ export const editMessage = async (req, res) => {
         message,
         edited: true,
       },
-      { new: true }
+      { returnDocument: "after" }
     );
 
     return res.status(200).json({

@@ -9,6 +9,8 @@ import projectModel from "./models/project.model.js";
 import userModel from "./models/user.model.js";
 import Message from "./models/message.model.js";
 import { generateResult } from "./services/ai.service.js";
+import { findRelevantFiles } from "./services/similarity.service.js";
+import { indexChangedFiles } from "./services/file.service.js";
 
 const port = process.env.PORT || 3000;
 const server = http.createServer(app);
@@ -114,11 +116,17 @@ io.on("connection", (socket) => {
         isThinking: true,
       });
 
-      const result = await generateResult({
-        prompt,
-        projectName: socket.project.name,
-        fileTree: socket.project.fileTree,
-      });
+      const relevantFiles = await findRelevantFiles(
+  socket.project._id,
+  prompt
+);
+console.log("Relevant Files:", relevantFiles.map(file => file.path));
+
+const result = await generateResult({
+  prompt,
+  projectName: socket.project.name,
+  contextFiles: relevantFiles,
+});
 
       const mergedFileTree = mergeFileTrees(
         socket.project.fileTree,
@@ -127,6 +135,10 @@ io.on("connection", (socket) => {
 
       socket.project.fileTree = mergedFileTree;
       await socket.project.save();
+      await indexChangedFiles(
+  socket.project,
+  result.fileTree || {}
+);
 
       // 5. Save Zenith's response
 const aiMessage = await Message.create({
