@@ -204,30 +204,32 @@ const Project = () => {
     };
 
     const handleSaveEdit = async () => {
-        if (!editedMessage.trim()) return;
-        const shouldRegenerate = editedMessage
-            .toLowerCase()
-            .includes("@zenith");
+    if (!editedMessage.trim()) return;
 
-        setShowEditModal(false);
+    const shouldRegenerate = editedMessage
+        .toLowerCase()
+        .includes("@zenith");
 
-        setMessages((prev) =>
-            prev.map((msg) =>
-                msg._id === editingMessageId
-                    ? {
-                        ...msg,
-                        message: editedMessage,
-                        edited: true,
-                    }
-                    : msg
-            )
-        );
+    setShowEditModal(false);
 
-        await editMessage(editingMessageId, editedMessage);
+    setMessages((prev) =>
+        prev.map((msg) =>
+            msg._id === editingMessageId
+                ? {
+                      ...msg,
+                      message: editedMessage,
+                      edited: true,
+                  }
+                : msg
+        )
+    );
 
-        if (shouldRegenerate) {
-            setIsZenithThinking(true);
+    await editMessage(editingMessageId, editedMessage);
 
+    if (shouldRegenerate) {
+        setIsZenithThinking(true);
+
+        try {
             const response = await regenerateMessage(editingMessageId);
 
             if (response.data.aiMessage) {
@@ -245,30 +247,16 @@ const Project = () => {
                     mergeFileTrees(prev, response.data.fileTree)
                 );
             }
-
+        } catch (error) {
+            console.error(error);
+        } finally {
             setIsZenithThinking(false);
         }
-        if (response.data.aiMessage) {
-            setMessages((prev) =>
-                prev.map((msg) =>
-                    msg._id === response.data.aiMessage._id
-                        ? response.data.aiMessage
-                        : msg
-                )
-            );
-        }
+    }
 
-        if (response.data.fileTree) {
-            setFileTree((prev) =>
-                mergeFileTrees(prev, response.data.fileTree)
-            );
-        }
-
-        setIsZenithThinking(false);
-
-        setEditingMessageId(null);
-        setEditedMessage("");
-    };
+    setEditingMessageId(null);
+    setEditedMessage("");
+};
 
 
 

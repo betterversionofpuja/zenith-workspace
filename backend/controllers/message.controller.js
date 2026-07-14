@@ -1,6 +1,28 @@
 import Message from "../models/message.model.js";
 import projectModel from "../models/project.model.js";
 import { generateResult } from "../services/ai.service.js";
+import { findRelevantFiles } from "../services/similarity.service.js";
+import { indexChangedFiles } from "../services/file.service.js";
+
+function mergeFileTrees(existingTree = {}, newTree = {}) {
+  const merged = { ...existingTree };
+
+  for (const key in newTree) {
+    if (
+      merged[key] &&
+      typeof merged[key] === "object" &&
+      !merged[key].file &&
+      typeof newTree[key] === "object" &&
+      !newTree[key].file
+    ) {
+      merged[key] = mergeFileTrees(merged[key], newTree[key]);
+    } else {
+      merged[key] = newTree[key];
+    }
+  }
+
+  return merged;
+}
 
 export const getMessages = async (req, res) => {
   try {
@@ -91,12 +113,33 @@ export const regenerateMessage = async (req, res) => {
 
     const prompt = message.message.replace(/@zenith/gi, "").trim();
 
+    const relevantFiles = await findRelevantFiles(
+      project._id,
+      prompt
+    );
+
     const result = await generateResult({
       prompt,
       projectName: project.name,
-      fileTree: project.fileTree,
+      contextFiles: relevantFiles,
     });
 
+    let mergedFileTree = project.fileTree;
+
+    if (result.fileTree && Object.keys(result.fileTree).length > 0) {
+      mergedFileTree = mergeFileTrees(
+        project.fileTree,
+        result.fileTree
+      );
+
+      project.fileTree = mergedFileTree;
+      await project.save();
+
+      await indexChangedFiles(
+        project,
+        result.fileTree
+      );
+    }
     const oldAIReply = await Message.findOne({
       replyTo: message._id,
     });
@@ -108,7 +151,7 @@ export const regenerateMessage = async (req, res) => {
       return res.status(200).json({
         success: true,
         aiMessage: oldAIReply,
-        fileTree: result.fileTree,
+        fileTree: mergedFileTree,
         buildCommand: result.buildCommand,
         startCommand: result.startCommand,
       });
@@ -127,7 +170,7 @@ export const regenerateMessage = async (req, res) => {
     return res.status(200).json({
       success: true,
       aiMessage,
-      fileTree: result.fileTree,
+      fileTree: mergedFileTree,
       buildCommand: result.buildCommand,
       startCommand: result.startCommand,
     });
