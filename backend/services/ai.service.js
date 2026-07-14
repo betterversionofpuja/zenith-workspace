@@ -34,19 +34,38 @@ ${prompt}
 `,
   });
 
+  const rawText = (response.text || "").trim();
+
+  // Conversation Mode (plain text)
+  if (!rawText.startsWith("{") && !rawText.startsWith("```")) {
+    return {
+      text: rawText,
+      fileTree: {},
+      buildCommand: null,
+      startCommand: null,
+    };
+  }
+
   try {
-    const cleaned = response.text
+    const cleaned = rawText
       .replace(/```json/g, "")
       .replace(/```/g, "")
       .trim();
 
-    return JSON.parse(cleaned);
+    // Extract JSON even if Gemini adds extra text
+    const jsonMatch = cleaned.match(/\{[\s\S]*\}$/);
+
+    if (!jsonMatch) {
+      throw new Error("No JSON object found.");
+    }
+
+    return JSON.parse(jsonMatch[0]);
   } catch (error) {
     console.error("AI Response Parse Error:", error);
-    console.log("Raw AI Response:", response.text);
+    console.log("Raw AI Response:", rawText);
 
     return {
-      text: response.text,
+      text: rawText,
       fileTree: {},
       buildCommand: null,
       startCommand: null,
