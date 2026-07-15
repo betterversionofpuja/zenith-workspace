@@ -21,12 +21,15 @@ app.use(
   })
 );
 app.use(express.urlencoded({ extended: true }));
-app.use(cookieParser());          
+app.use(cookieParser());   
 
-app.use("/users", userRoutes);
-app.use("/projects", projectRoutes);
-app.use("/messages", messageRoutes);
-app.use("/ai", aiRouter);
+// Health check
+app.get("/", (req, res) => {
+  res.status(200).json({
+    success: true,
+    message: "Zenith Workspace API is running 🚀",
+  });
+});
 
 app.get("/health", (req, res) => {
   res.status(200).json({
@@ -34,5 +37,10 @@ app.get("/health", (req, res) => {
     uptime: process.uptime(),
   });
 });
+
+app.use("/users", userRoutes);
+app.use("/projects", projectRoutes);
+app.use("/messages", messageRoutes);
+app.use("/ai", aiRouter);
 
 export default app;
