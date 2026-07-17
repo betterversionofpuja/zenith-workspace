@@ -1,13 +1,6 @@
 <div align="center">
 
 # ⚡ Zenith Workspace
----
-
-<p align="center">
-  <img src="./assets/project.png" alt="Zenith Workspace Preview" width="100%">
-</p>
-
----
 
 ### A Real-Time, AI-Powered Collaborative Cloud IDE
 
@@ -19,7 +12,15 @@
 
 </div>
 
+---
 
+## 📸 Project Preview
+
+<p align="center">
+  <img src="./assets/project.png" alt="Zenith Workspace Preview" width="100%">
+</p>
+
+---
 
 ## 📖 About
 
