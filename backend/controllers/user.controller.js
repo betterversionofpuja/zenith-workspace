@@ -1,8 +1,7 @@
 import userModel from '../models/user.model.js';
 import * as userService from '../services/user.service.js';
 import { validationResult } from 'express-validator';
-import redisClient from '../services/redis.service.js';
-
+import RevokedToken from '../models/revokedToken.model.js';
 
 export const createUserController = async (req, res) => {
 
@@ -79,7 +78,11 @@ export const logoutController = async (req, res) => {
 
         const token = req.cookies.token || req.headers.authorization.split(' ')[ 1 ];
 
-        redisClient.set(token, 'logout', 'EX', 60 * 60 * 24);
+        await RevokedToken.updateOne(
+          { token },
+          { $setOnInsert: { expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000) } },
+          { upsert: true }
+        );
 
         res.status(200).json({
             message: 'Logged out successfully'
