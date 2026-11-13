@@ -1,6 +1,5 @@
 import jwt from "jsonwebtoken";
-import redisClient from "../services/redis.service.js";
-
+import RevokedToken from "../models/revokedToken.model.js";
 
 export const authUser = async (req, res, next) => {
   try {
@@ -25,8 +24,7 @@ This prevents logged-out users from reusing the same token until it expires."
 
 */
 
-    const isBlackListed = await redisClient.get(token);
-
+    const isBlackListed = await RevokedToken.exists({ token });
     if (isBlackListed) {
       res.cookie("token", "");
       return res.status(401).json({
